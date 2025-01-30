@@ -1,3 +1,5 @@
+SET SERVER OUTPUT ON 
+
 CREATE OR REPLACE PROCEDURE Saludar
 IS
 BEGIN
@@ -7,6 +9,7 @@ END;
 
 EXEC Saludar;
 -------------------------------------------------------------------------------------------------------------------
+SET SERVER OUTPUT ON 
 CREATE OR REPLACE PROCEDURE Saludar_Usuario(
 Nombre IN varchar2(20)
 )
@@ -19,7 +22,7 @@ END;
 
 EXEC Saludar_Usuario ('Daniel');
 -------------------------------------------------------------------------------------------------------------------
-
+SET SERVER OUTPUT ON 
 CREATE OR REPLACE PROCEDURE Saludar_Completo(
     Nombre IN VARCHAR2,
     Apellido IN VARCHAR2
