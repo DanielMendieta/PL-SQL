@@ -1,4 +1,4 @@
-SET SERVER OUTPUT ON 
+SET SERVEROUTPUT ON 
 
 CREATE OR REPLACE PROCEDURE Saludar
 IS
@@ -9,7 +9,7 @@ END;
 
 EXEC Saludar;
 -------------------------------------------------------------------------------------------------------------------
-SET SERVER OUTPUT ON 
+SET SERVEROUTPUT ON  
 CREATE OR REPLACE PROCEDURE Saludar_Usuario(
 Nombre IN varchar2(20)
 )
@@ -22,7 +22,7 @@ END;
 
 EXEC Saludar_Usuario ('Daniel');
 -------------------------------------------------------------------------------------------------------------------
-SET SERVER OUTPUT ON 
+SET SERVEROUTPUT ON 
 CREATE OR REPLACE PROCEDURE Saludar_Completo(
     Nombre IN VARCHAR2,
     Apellido IN VARCHAR2
@@ -34,5 +34,27 @@ END;
 /
 
 EXEC Saludar_Completo('Daniel', 'Mendieta');
+---------------------------------------------------------------------------------------------------------------------
+SET SERVEROUTPUT ON 
+CREATE OR REPLACE PROCEDURE Evaluar_Numero(
+Numero IN NUMBER
+)
+IS
+
+BEGIN   
+IF Numero > 0 THEN
+DBMS_OUTPUT.PUT_LINE ('El Numero es positivo');
+
+ELSIF Numero < 0 THEN
+DBMS_OUTPUT.PUT_LINE ('El Numero es negativo');
+
+ELSE 
+DBMS_OUTPUT.PUT_LINE('EL Numero es CERO');
+END IF;
+END;
+
+/
+
+EXEC Evaluar_Numero (-1);
 
 
