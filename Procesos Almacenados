@@ -56,5 +56,63 @@ END;
 /
 
 EXEC Evaluar_Numero (-1);
+---------------------------------------------------------------------------------------------------------------
+
+Consigna del Ejercicio
+Crea un procedimiento almacenado en PL/SQL llamado Obtener_Total_Pedidos que reciba como parámetro el ID del cliente y 
+devuelva la suma total de sus pedidos.
+
+📌 Requisitos
+El procedimiento debe recibir un ID de cliente como parámetro.
+Debe calcular la suma del total de sus pedidos en la tabla Pedidos.
+Debe mostrar el resultado en DBMS_OUTPUT.PUT_LINE con un mensaje como:
+
+
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE PROCEDURE Obtener_Total_Pedidos(
+    ID_Cliente IN NUMBER
+)
+IS
+    Resultado NUMBER := 0; -- Declaramos la variable correctamente
+    NombreCliente VARCHAR2(50);
+    ApellidoCliente VARCHAR2(50);
+BEGIN   
+    -- Usamos SELECT INTO para asignar valores a las variables
+    SELECT Clientes.Nombre, Clientes.Apellido, COUNT(Pedidos.ID_Pedido)
+    INTO NombreCliente, ApellidoCliente, Resultado
+    FROM Clientes
+    LEFT JOIN Pedidos ON Clientes.ID_Cliente = Pedidos.ID_Cliente
+    WHERE Clientes.ID_Cliente = ID_Cliente
+    GROUP BY Clientes.Nombre, Clientes.Apellido;
+
+    -- Validamos si el cliente tiene pedidos
+    IF Resultado = 0 THEN 
+        DBMS_OUTPUT.PUT_LINE('El cliente ' || NombreCliente || ' ' || ApellidoCliente || ' no tiene pedidos realizados.');
+    ELSE 
+        DBMS_OUTPUT.PUT_LINE('El cliente ' || NombreCliente || ' ' || ApellidoCliente || ' tiene ' || Resultado || ' pedidos.');
+    END IF;
+END;
+/
+
+-- Ejecutar el procedimiento
+EXEC Obtener_Total_Pedidos(5);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
