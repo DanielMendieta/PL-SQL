@@ -1,0 +1,35 @@
+CREATE OR REPLACE PROCEDURE Saludar
+IS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('¡Hola, bienvenido a PL/SQL!');
+END;
+/
+
+EXEC Saludar;
+-------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE PROCEDURE Saludar_Usuario(
+Nombre IN varchar2(20)
+)
+IS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('¡BIENVENIDO!' || Nombre);
+END;
+/
+
+
+EXEC Saludar_Usuario ('Daniel');
+-------------------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE Saludar_Completo(
+    Nombre IN VARCHAR2,
+    Apellido IN VARCHAR2
+)
+IS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('¡Hola, ' || Nombre || ' ' || Apellido || '! Bienvenido a PL/SQL!');
+END;
+/
+
+EXEC Saludar_Completo('Daniel', 'Mendieta');
+
+
