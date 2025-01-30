@@ -7,7 +7,7 @@ producto
 mismo tipo (type) que la anterior
 * Hacemos el cálculo y visualizamos el resultado.
 
-SET SERVER OUTPUT ON 
+SET SERVEROUTPUT ON 
 
 DECLARE
 impuesto CONSTANT NUMBER := 21;
