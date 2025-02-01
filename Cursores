@@ -29,7 +29,7 @@ END;
 ✔ EXIT WHEN %NOTFOUND detiene el bucle cuando no hay más filas.
 ✔ CLOSE cierra el cursor.
 
-CONSULTA ANTERIOR PERO CON UN BUCLE FOR;
+---CONSULTA ANTERIOR PERO CON UN BUCLE FOR;
 
 BEGIN
     FOR r_empleado IN (SELECT nombre, salario FROM empleados WHERE salario > 2000) LOOP
@@ -47,14 +47,49 @@ END;
 Si solo necesitas recorrer filas sin un control manual, usa un FOR.
 Es más corto, más limpio y evita errores al manejar el cursor automáticamente.
 
+--------------------------------------------------------------------------------------------------
+
+ATRIBUTO PARA CURSORES
+
+✅ %FOUND → Hay más filas (sigue el bucle).
+✅ %NOTFOUND → No hay más filas (se detiene el bucle).
+✅ %ROWCOUNT → Cuenta filas recuperadas.
+✅ %ISOPEN → Verifica si el cursor está abierto.
 
 
+--------------------------------------------------------------------------------------------------
+
+BEGIN
+    -- Contador de filas
+    DECLARE
+        v_count NUMBER := 0;
+    BEGIN
+        FOR I IN (SELECT id, nombre, salario FROM empleados ORDER BY nombre DESC) LOOP
+            DBMS_OUTPUT.PUT_LINE('Empleado: ' || I.id || ' - Nombre: ' || I.nombre || ' - Salario: ' || I.salario);
+            
+            -- Contar filas procesadas
+            v_count := v_count + 1;
+            DBMS_OUTPUT.PUT_LINE('Cantidad de empleados procesados: ' || v_count);
+        END LOOP;
+    END;
+END;
+/
+
+--------------------------------------------------------------------------------------------------
+
+EJEMPLO SENCILLO CON FOR
+
+Usa un cursor explícito para recorrer los productos de la tabla.
+Muestra en la salida el nombre y el precio de cada producto utilizando DBMS_OUTPUT.PUT_LINE.
+Detén el bucle cuando ya no haya más productos.
 
 
-
-
-
-
+BEGIN
+    FOR I IN (SELECT nombre, precio FROM productos) LOOP
+            DBMS_OUTPUT.PUT_LINE('Nombre: ' || I.nombre || ' Precio: ' || I.precio);
+     END LOOP;
+END; 
+/
 
 
 
