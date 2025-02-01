@@ -114,7 +114,38 @@ BEGIN
 
 END;
 /
+DE LA FORMA LARGA SERÍAS ASI:
 
+DECLARE
+    CURSOR cursor_productos IS
+        SELECT nombre, precio FROM productos WHERE categoria_id = 3;
+    nombre productos.nombre%TYPE;
+    precio productos.precio%TYPE;
+BEGIN
+    -- Abrir el cursor
+    OPEN cursor_productos;
+    
+    -- Recorrer las filas
+    LOOP
+        FETCH cursor_productos INTO nombre, precio;
+        EXIT WHEN cursor_productos%NOTFOUND;  -- Salir cuando no haya más filas
+        
+        -- Aplicar el aumento del 5% al precio
+        precio := precio * 1.05;
+        
+        -- Mostrar el nombre y el nuevo precio
+        DBMS_OUTPUT.PUT_LINE('Producto: ' || nombre || ' Nuevo Precio: ' || precio);
+        
+        -- Verificar si el precio es mayor a 100
+        IF precio > 100 THEN
+            DBMS_OUTPUT.PUT_LINE('¡Producto caro!');
+        END IF;
+    END LOOP;
+    
+    -- Cerrar el cursor
+    CLOSE cursor_productos;
+END;
+/
 --------------------------------------------------------------------------------------------------
 
 
