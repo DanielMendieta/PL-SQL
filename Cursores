@@ -90,8 +90,32 @@ BEGIN
      END LOOP;
 END; 
 /
+--------------------------------------------------------------------------------------------------
 
+Consigna:
 
+    Usa un cursor explícito para recorrer todos los productos de la categoría 3.
+    Aumenta el precio de cada producto en un 5%.
+    Muestra en la salida el nombre del producto y el nuevo precio después del incremento.
+    Si el nuevo precio de un producto es mayor a 100, muestra el mensaje: "Producto caro".
+    Después de procesar todos los productos de la categoría, muestra el total de productos procesados.
+
+BEGIN
+    -- Actualiza el precio de los productos de la categoría 3
+    UPDATE productos SET precio = precio * 1.05 WHERE categoria_id = 3;
+
+    -- Recorre los productos de la categoría 3
+    FOR I IN (SELECT nombre, precio FROM productos WHERE categoria_id = 3) LOOP
+        DBMS_OUTPUT.PUT_LINE('Producto: ' || I.nombre || ' Nuevo Precio: ' || I.precio);
+        IF I.precio > 100 THEN 
+            DBMS_OUTPUT.PUT_LINE('¡Producto caro!');
+        END IF;
+    END LOOP;
+
+END;
+/
+
+--------------------------------------------------------------------------------------------------
 
 
 
