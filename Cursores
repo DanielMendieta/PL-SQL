@@ -1,0 +1,63 @@
+ ¿Cuándo usar Cursores?
+
+✅ Cuando necesitas procesar filas una por una.
+✅ Para recorrer datos en bucles dentro de PL/SQL.
+✅ Cuando una consulta devuelve varias filas y necesitas control sobre ellas.
+
+🚀 Conclusión:
+Un cursor permite recorrer los resultados de una consulta fila por fila dentro de PL/SQL, útil cuando necesitas procesar datos de manera secuencial.
+
+DECLARE
+    CURSOR c_empleados IS  
+        SELECT nombre, salario FROM empleados WHERE salario > 2000;
+    v_nombre empleados.nombre%TYPE;
+    v_salario empleados.salario%TYPE;
+BEGIN
+    OPEN c_empleados;  -- Abrir el cursor
+    LOOP
+        FETCH c_empleados INTO v_nombre, v_salario;  -- Obtener fila
+        EXIT WHEN c_empleados%NOTFOUND;  -- Salir cuando no haya más filas
+        DBMS_OUTPUT.PUT_LINE('Empleado: ' || v_nombre || ' - Salario: ' || v_salario);
+    END LOOP;
+    CLOSE c_empleados;  -- Cerrar el cursor
+END;
+/
+¿Qué pasa aquí?
+✔ DECLARE CURSOR guarda la consulta.
+✔ OPEN abre el cursor.
+✔ FETCH obtiene una fila a la vez.
+✔ EXIT WHEN %NOTFOUND detiene el bucle cuando no hay más filas.
+✔ CLOSE cierra el cursor.
+
+CONSULTA ANTERIOR PERO CON UN BUCLE FOR;
+
+BEGIN
+    FOR r_empleado IN (SELECT nombre, salario FROM empleados WHERE salario > 2000) LOOP
+        DBMS_OUTPUT.PUT_LINE('Empleado: ' || r_empleado.nombre || ' - Salario: ' || r_empleado.salario);
+    END LOOP;
+END;
+/
+
+✔ No necesitas DECLARE CURSOR, OPEN, FETCH ni CLOSE.
+✔ El FOR recorre automáticamente cada fila de la consulta.
+✔ r_empleado es un registro temporal que contiene los valores de cada fila.
+
+🚀 Conclusión
+
+Si solo necesitas recorrer filas sin un control manual, usa un FOR.
+Es más corto, más limpio y evita errores al manejar el cursor automáticamente.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
