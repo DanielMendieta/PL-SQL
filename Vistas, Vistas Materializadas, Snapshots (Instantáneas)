@@ -1,0 +1,145 @@
+📌 1. Vistas (Views)
+✅ ¿Qué son?
+Una vista es como una "ventana" a los datos de una o varias tablas. Es una consulta guardada que no almacena datos, solo muestra resultados en tiempo real.
+
+✅ ¿Para qué sirve?
+
+Facilita consultas complejas.
+Mejora la seguridad (se pueden ocultar columnas sensibles).
+Simplifica el acceso a los datos.
+
+CREATE VIEW vista_empleados AS 
+SELECT id, nombre, salario 
+FROM empleados 
+WHERE salario > 3000;
+
+--SELECT * FROM vista_empleados;
+
+🔹 Los datos siempre estarán actualizados porque la vista se ejecuta al momento de la consulta.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+📌 2. Vistas Materializadas
+✅ ¿Qué son?
+Son como las vistas normales, pero almacenan los datos en una tabla temporal.
+
+✅ ¿Para qué sirven?
+
+Mejoran la velocidad en consultas pesadas.
+Reducen la carga en la base de datos.
+
+CREATE MATERIALIZED VIEW vista_emp_materializada AS 
+SELECT id, nombre, salario 
+FROM empleados 
+WHERE salario > 3000;
+
+🔹 Diferencia clave:
+Si la tabla empleados cambia, la vista normal lo refleja de inmediato, pero la vista materializada NO. Se debe actualizar manualmente:
+
+--REFRESH MATERIALIZED VIEW vista_emp_materializada;
+
+💡 Útil cuando los datos no cambian constantemente y se quiere mejorar el rendimiento.
+
+📌 Ejemplo: Vista Materializada para Ventas
+🎯 Situación
+Supongamos que tienes una tabla llamada ventas, donde se registran todas las ventas realizadas.
+Las consultas a esta tabla pueden ser pesadas porque hay millones de registros.
+
+Para mejorar el rendimiento, podemos crear una Vista Materializada que almacene el total de ventas por categoría de producto.
+
+CREATE MATERIALIZED VIEW ventas_categoria_mv
+REFRESH FAST ON COMMIT
+AS
+SELECT categoria_id, SUM(total) AS total_ventas
+FROM ventas
+GROUP BY categoria_id;
+
+📌 Explicación
+1️⃣ CREATE MATERIALIZED VIEW → Estamos creando una Vista Materializada llamada ventas_categoria_mv.
+2️⃣ SELECT categoria_id, SUM(total) AS total_ventas FROM ventas GROUP BY categoria_id → Calcula el total de ventas por categoría.
+3️⃣ REFRESH FAST ON COMMIT → Se actualiza automáticamente cuando se hacen cambios en la tabla ventas.
+
+📌 ¿Cómo la usamos?
+Ahora, en lugar de hacer la consulta pesada sobre ventas, podemos consultar directamente la vista:
+
+SELECT * FROM ventas_categoria_mv;
+
+✅ Ventaja: Las consultas son mucho más rápidas porque los datos ya están precomputados.
+
+📌 Resumen
+Las Vistas Materializadas almacenan datos precomputados para mejorar el rendimiento.
+Se pueden actualizar automáticamente (ON COMMIT, ON DEMAND, etc.).
+Se usan para reportes y análisis de datos sin afectar el rendimiento de la base original.
+📌 Ejemplo en la vida real:
+Si tienes una tienda en línea con miles de ventas, una Vista Materializada te permite obtener rápidamente las ventas totales por categoría, sin recalcular todo desde cero en cada consulta. 🚀
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+📌 3. Snapshots (Instantáneas)
+✅ ¿Qué son?
+Los snapshots (en Oracle) son un tipo especial de vista materializada, usados principalmente en replicación de datos.
+
+✅ ¿Para qué sirven?
+
+Se usan para copiar datos de una base de datos remota a una local.
+Son útiles en bases de datos distribuidas.
+✅ Ejemplo
+CREATE MATERIALIZED VIEW snapshot_empleados 
+REFRESH FAST START WITH SYSDATE 
+NEXT SYSDATE + 1 
+AS SELECT * FROM empleados;
+
+
+📌 Diferencias Clave
+Característica	Vista Normal	Vista Materializada	Snapshot
+Almacena datos	❌ No	✅ Sí	✅ Sí
+Datos en tiempo real	✅ Sí	❌ No (requiere REFRESH)	❌ No (pero puede programarse)
+Mejora rendimiento	❌ No	✅ Sí	✅ Sí
+Usado en replicación	❌ No	❌ No	✅ Sí
+
+
+📌 ¿Para qué sirve un Snapshot?
+✅ Se usa cuando quieres tener datos en otra base de datos sin hacer consultas a la original constantemente.
+✅ Permite trabajar con datos "congelados" en un momento específico y actualizarse cuando sea necesario.
+✅ Se usa en réplicas de datos y sincronización entre servidores.
+
+📌 Ejemplo sencillo
+Imagina que hay una base de datos en una empresa central, pero hay sucursales que necesitan una copia de la tabla de empleados.
+En lugar de hacer consultas remotas a la base principal (lo cual es lento), las sucursales pueden tener un Snapshot que se actualiza una vez al día.
+
+CREATE MATERIALIZED VIEW snapshot_empleados 
+REFRESH FAST START WITH SYSDATE 
+NEXT SYSDATE + 1 
+AS SELECT * FROM empleados;
+
+🔹 Esto significa que la tabla "snapshot_empleados" se actualiza todos los días automáticamente.
+
+📌 Diferencia con una Vista Materializada:
+
+Las Vistas Materializadas se usan para mejorar el rendimiento dentro de la misma base de datos.
+Los Snapshots se usan para copiar datos en bases de datos remotas y mantenerlas sincronizadas.
+
+📌 Resumen en palabras simples
+Es como una foto de una tabla en un momento específico.
+Se usa en bases de datos remotas para evitar consultas directas a la original.
+Se puede actualizar automáticamente en intervalos de tiempo definidos.
+
+📢 Ejemplo de la vida real:
+Si tienes una empresa con una sede en otra ciudad, en vez de consultar los datos de empleados cada vez (lo cual puede ser lento), 
+puedes hacer un Snapshot que se actualiza cada día y tener los datos listos para usar. 🚀
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
