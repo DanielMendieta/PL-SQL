@@ -1,0 +1,97 @@
+Las excepciones en PL/SQL son errores que ocurren en tiempo de ejecución. 
+Se manejan con un bloque especial para evitar que el programa falle de forma inesperada.
+
+BEGIN
+    -- Código que puede generar un error
+EXCEPTION
+    WHEN excepción_1 THEN
+        -- Acción a tomar si ocurre la excepción 1
+    WHEN excepción_2 THEN
+        -- Acción para la excepción 2
+    WHEN OTHERS THEN
+        -- Acción para cualquier otra excepción
+END;
+/
+
+-----------------------------------------------------------------------------------------------
+
+Excepción	Ocurre cuando...
+NO_DATA_FOUND	Una consulta no devuelve registros.
+TOO_MANY_ROWS	Una consulta devuelve más de un registro en SELECT INTO.
+ZERO_DIVIDE	Se intenta dividir por cero.
+INVALID_NUMBER	Se intenta convertir un valor no numérico a número.
+
+DECLARE
+    v_nombre empleados.nombre%TYPE;
+BEGIN
+    SELECT nombre INTO v_nombre FROM empleados WHERE id = 999; -- No existe el ID
+    DBMS_OUTPUT.PUT_LINE('Empleado encontrado: ' || v_nombre);
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('¡Error! No se encontró el empleado.');
+END;
+/
+-----------------------------------------------------------------------------------------------
+
+Puedes definir tus propios errores con RAISE.
+
+DECLARE
+    v_salario NUMBER := 2000;
+    salario_bajo EXCEPTION;
+BEGIN
+    IF v_salario < 3000 THEN
+        RAISE salario_bajo;  -- Lanza la excepción personalizada
+    END IF;
+EXCEPTION
+    WHEN salario_bajo THEN
+        DBMS_OUTPUT.PUT_LINE('¡Error! El salario es demasiado bajo.');
+END;
+/
+
+-----------------------------------------------------------------------------------------------
+
+WHEN OTHERS y SQLCODE/SQLERRM
+
+BEGIN
+    UPDATE empleados SET salario = salario / 0;  -- Error de división por cero
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLCODE || ' - ' || SQLERRM);
+END;
+/
+
+📌 SQLCODE devuelve el código del error.
+📌 SQLERRM devuelve el mensaje de error.
+
+📌 Conclusión
+✔️ Manejar excepciones evita que el programa falle bruscamente.
+✔️ Usa excepciones predefinidas para errores comunes.
+✔️ Puedes crear excepciones personalizadas con RAISE.
+✔️ WHEN OTHERS captura cualquier error inesperado. 🚀
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
