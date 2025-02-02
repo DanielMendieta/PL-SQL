@@ -1,0 +1,24 @@
+DECLARE
+    salario NUMBER := 4000;
+BEGIN
+    IF salario > 5000 THEN
+        DBMS_OUTPUT.PUT_LINE('Salario alto');
+    ELSIF salario BETWEEN 3000 AND 5000 THEN
+        DBMS_OUTPUT.PUT_LINE('Salario medio');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Salario bajo');
+    END IF;
+END;
+/
+
+------------------------------------------------------------------------------
+DECLARE
+    cargo VARCHAR2(20) := 'Gerente';
+BEGIN
+    CASE cargo
+        WHEN 'Gerente' THEN DBMS_OUTPUT.PUT_LINE('Salario alto');
+        WHEN 'Analista' THEN DBMS_OUTPUT.PUT_LINE('Salario medio');
+        ELSE DBMS_OUTPUT.PUT_LINE('Salario bajo');
+    END CASE;
+END;
+/
