@@ -1,0 +1,73 @@
+Trigger Compuesto en PL/SQL (Oracle) es un tipo especial de trigger que permite definir múltiples secciones de código dentro de un mismo trigger, ejecutándose en diferentes momentos del ciclo de una operación INSERT, UPDATE o DELETE.
+
+Se divide en cuatro secciones según el momento en el que se ejecuta el código:
+
+1️⃣ BEFORE STATEMENT → Antes de que la operación comience.
+2️⃣ BEFORE EACH ROW → Antes de modificar cada fila afectada.
+3️⃣ AFTER EACH ROW → Después de modificar cada fila afectada.
+4️⃣ AFTER STATEMENT → Después de que la operación termine.
+
+¿Para qué sirven los Triggers Compuestos?
+✅ Permiten manejar acciones más complejas en una sola estructura.
+✅ Mejoran el rendimiento, evitando la creación de múltiples triggers separados.
+✅ Son útiles para auditoría, validaciones y actualizaciones automáticas.
+
+CREATE OR REPLACE TRIGGER trg_compuesto_empleados
+FOR UPDATE ON empleados
+COMPOUND TRIGGER
+
+    -- Sección BEFORE STATEMENT
+    BEFORE STATEMENT IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Inicio de actualización de empleados.');
+    END BEFORE STATEMENT;
+
+    -- Sección BEFORE EACH ROW
+    BEFORE EACH ROW IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Actualizando empleado: ' || :OLD.nombre);
+    END BEFORE EACH ROW;
+
+    -- Sección AFTER EACH ROW
+    AFTER EACH ROW IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Empleado actualizado: ' || :NEW.nombre);
+    END AFTER EACH ROW;
+
+    -- Sección AFTER STATEMENT
+    AFTER STATEMENT IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Fin de actualización de empleados.');
+    END AFTER STATEMENT;
+
+END trg_compuesto_empleados;
+/
+
+Explicación del Ejemplo
+🔹 Cuando se ejecuta un UPDATE en la tabla empleados, el trigger compuesto:
+✅ Antes de la actualización (BEFORE STATEMENT) → Muestra un mensaje de inicio.
+✅ Antes de modificar cada fila (BEFORE EACH ROW) → Informa qué empleado se está actualizando.
+✅ Después de modificar cada fila (AFTER EACH ROW) → Confirma la actualización del empleado.
+✅ Después de la actualización (AFTER STATEMENT) → Muestra un mensaje de finalización.
+
+Triggers Compuestos son ideales para manejar múltiples eventos dentro de un mismo trigger, 
+mejorando la eficiencia y organización del código en PL/SQL. 🚀
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
