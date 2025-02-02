@@ -1,0 +1,53 @@
+ Package en PL/SQL es como una carpeta que agrupa varios objetos (procedimientos, funciones, cursores, etc.) que tienen un mismo propósito.
+
+🔹 Ejemplo simple:
+Si estás desarrollando un sistema de empleados, podrías tener un Package llamado Empleado_Pkg que contenga:
+✅ Una función para obtener el salario.
+✅ Un procedimiento para actualizar el salario.
+✅ Un cursor para listar empleados con alto salario.
+
+Todo en un solo lugar, organizado y eficiente. 📦🚀
+
+
+CREATE OR REPLACE PACKAGE Empleado_Pkg AS  
+    PROCEDURE Aumentar_Salario(p_id NUMBER, p_incremento NUMBER);
+    FUNCTION Obtener_Salario(p_id NUMBER) RETURN NUMBER;
+END Empleado_Pkg;
+/
+
+
+CREATE OR REPLACE PACKAGE BODY Empleado_Pkg AS  
+
+    PROCEDURE Aumentar_Salario(p_id NUMBER, p_incremento NUMBER) IS  
+    BEGIN  
+        UPDATE empleados SET salario = salario + p_incremento WHERE id = p_id;  
+        COMMIT;  
+    END Aumentar_Salario;  
+
+    FUNCTION Obtener_Salario(p_id NUMBER) RETURN NUMBER IS  
+        v_salario empleados.salario%TYPE;
+    BEGIN  
+        SELECT salario INTO v_salario FROM empleados WHERE id = p_id;  
+        RETURN v_salario;  
+    END Obtener_Salario;  
+
+END Empleado_Pkg;
+/
+
+BEGIN
+    Empleado_Pkg.Aumentar_Salario(1, 500);
+    DBMS_OUTPUT.PUT_LINE('Salario actualizado: ' || Empleado_Pkg.Obtener_Salario(1));
+END;
+/
+
+
+
+
+
+
+
+
+
+
+
+
