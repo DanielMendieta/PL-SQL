@@ -83,7 +83,18 @@ BEGIN
   END CASE;
 END;
 /                                          
+-------------------------------------------------------------------------------------------------------------
 
+SET SERVEROUTPUT ON; 
+
+DECLARE
+Nombre varchar2(10);
+    
+BEGIN
+Nombre := 'Daniel';    
+DBMS_OUTPUT.PUT_LINE(Nombre);
+END;
+/
 
 
 
