@@ -53,6 +53,30 @@ Explicación del Ejemplo
 Triggers Compuestos son ideales para manejar múltiples eventos dentro de un mismo trigger, 
 mejorando la eficiencia y organización del código en PL/SQL. 🚀
 
+------------------------------------------------------------------------------------------------------------
+
+Crea un Trigger llamado tr_aumento_salarial que se active antes de una actualización en la tabla empleados.
+Si el salario nuevo es menor al salario actual, el trigger debe impedir la actualización.
+Si el salario nuevo es mayor, la actualización se permite sin problemas.
+
+id_empleado (Identificación del empleado)
+nombre (Nombre del empleado)
+salario (Salario actual)
+fecha_contratacion (Fecha en que fue contratado)
+
+SET SERVEROUTPUT ON  
+
+CREATE OR REPLACE TRIGGER tr_aumento_salarial
+BEFORE UPDATE ON empleados
+FOR EACH ROW  
+BEGIN
+    IF :NEW.salario < :OLD.salario THEN
+        RAISE_APPLICATION_ERROR (-20000, 'ERROR VERIFIQUE EL NUEVO SALARIO');
+    ELSE 
+        DBMS_OUTPUT.PUT_LINE('ACTUALIZACION REALIZADA');
+    END IF;
+END;
+/
 
 
 
