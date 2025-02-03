@@ -78,6 +78,28 @@ BEGIN
 END;
 /
 
+------------------------------------------------------------------------------------------------------------
+
+
+Crea un Trigger llamado tr_historial_empleado que se active después de una actualización en la tabla empleados.
+El trigger debe insertar un registro en la tabla historial_empleados cada vez que se actualice el salario de un empleado.
+Los datos que se deben insertar son:
+id_empleado: el mismo que se está actualizando.
+salario_anterior: el salario antes de la actualización.
+salario_nuevo: el salario después de la actualización.
+fecha_cambio: la fecha en que se realizó la actualización.
+
+SET SERVEROUTPUT ON  
+
+CREATE OR REPLACE TRIGGER tr_historial_empleado
+AFTER UPDATE ON empleados
+FOR EACH ROW
+BEGIN
+    INSERT INTO historial_empleados (id_empleado, salario_anterior, salario_nuevo, fecha_cambio)
+    VALUES (:OLD.id_empleado, :OLD.salario, :NEW.salario, SYSDATE);
+    DBMS_OUTPUT.PUT_LINE('INSERCION REALIZADA');
+END;
+/
 
 
 
