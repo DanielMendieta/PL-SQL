@@ -147,6 +147,47 @@ BEGIN
 END;
 /
 --------------------------------------------------------------------------------------------------
+MENDIETA & SANTIAGO
+
+Obtén una lista de empleados que trabajan en el mismo departamento que un empleado específico 
+(elige un employee_id existente) y muestra su nombre, apellido y salario. 
+Ordena los resultados por salario en orden descendente.
+
+Proceso Almacenado con Cursor
+
+/*Obtén una lista de empleados que trabajan en el mismo departamento que un empleado específico 
+(elige un employee_id existente) y muestra su nombre, apellido y salario. 
+Ordena los resultados por salario en orden descendente.*/  
+
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE PROCEDURE prueba (p_id IN NUMBER) IS
+    CURSOR c_dep IS 
+        SELECT FIRST_NAME AS Nombre,
+               LAST_NAME AS Apellido,
+               SALARY AS Salario
+        FROM employees
+        WHERE DEPARTMENT_ID = (SELECT DEPARTMENT_ID FROM employees E WHERE E.EMPLOYEE_ID = p_id)
+        ORDER BY SALARY DESC;
+BEGIN
+    FOR reg IN c_dep LOOP
+        DBMS_OUTPUT.PUT_LINE('Nombre completo: ' || reg.Nombre || ' ' || reg.Apellido || ' - Salario: ' || reg.Salario);
+    END LOOP;
+END;
+/
+
+EXEC prueba(105);
+
+
+
+
+
+
+
+
+
+
+
 
 
 
