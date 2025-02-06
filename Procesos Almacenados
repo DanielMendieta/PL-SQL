@@ -11,14 +11,19 @@ Fecha de cambio
 Justificación: ‘Aumento por antigüedad y salario bajo’
 Si algún empleado ya recibió un aumento en el último año, se ignorará su caso.
 
-DECLARE
+CREATE OR REPLACE PROCEDURE ajustar_salarios IS
     CURSOR c_emp IS 
-        SELECT employee_id, salary, department_id 
-        FROM employees
-        WHERE salary < (SELECT AVG(salary) FROM employees WHERE department_id = employees.department_id)
-        AND ADD_MONTHS(hire_date, 60) <= SYSDATE
+        SELECT e.employee_id, e.salary, e.department_id 
+        FROM employees e
+        WHERE e.salary < (SELECT AVG(salary) FROM employees WHERE department_id = e.department_id)
+        AND ADD_MONTHS(e.hire_date, 60) <= SYSDATE
+        AND NOT EXISTS (
+            SELECT 1 FROM historial_salario h
+            WHERE h.employee_id = e.employee_id
+            AND h.fecha_cambio >= ADD_MONTHS(SYSDATE, -12)
+        )
         FOR UPDATE;
-        
+
     v_nuevo_salario employees.salary%TYPE;
 BEGIN
     FOR emp IN c_emp LOOP
@@ -29,13 +34,19 @@ BEGIN
         SET salary = v_nuevo_salario
         WHERE employee_id = emp.employee_id;
 
-        -- Insertar el cambio en la tabla historial_salario
-        INSERT INTO historial_salario (employee_id, salario_anterior, salario_nuevo, fecha_cambio)
-        VALUES (emp.employee_id, emp.salary, v_nuevo_salario, SYSDATE);
+        -- Insertar el cambio en la tabla historial_salario con la justificación
+        INSERT INTO historial_salario (employee_id, salario_anterior, salario_nuevo, fecha_cambio, justificacion)
+        VALUES (emp.employee_id, emp.salary, v_nuevo_salario, SYSDATE, 'Aumento por antigüedad y salario bajo');
 
         -- Mostrar información en consola
         DBMS_OUTPUT.PUT_LINE('Empleado ' || emp.employee_id || ' actualizado. Nuevo salario: ' || v_nuevo_salario);
     END LOOP;
+END ajustar_salarios;
+/
+
+
+BEGIN
+    ajustar_salarios;
 END;
 /
 
