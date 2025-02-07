@@ -1,0 +1,19 @@
+COUNT()	Cuenta la cantidad de filas.	SELECT COUNT(*) FROM employees;
+SUM()	Suma los valores de una columna numérica.	SELECT SUM(salary) FROM employees;
+AVG()	Calcula el promedio de una columna numérica.	SELECT AVG(salary) FROM employees;
+MAX()	Obtiene el valor máximo de una columna.	SELECT MAX(salary) FROM employees;
+MIN()	Obtiene el valor mínimo de una columna.	SELECT MIN(salary) FROM employees;
+
+Características importantes
+🔹 Se pueden usar con GROUP BY para agrupar datos.
+🔹 Se pueden combinar con HAVING para filtrar resultados agregados.
+🔹 COUNT(*) cuenta todas las filas, mientras que COUNT(columna) cuenta solo las filas no nulas.
+
+
+LISTAGG()	Concatena valores de una columna en una sola cadena, separados por un delimitador.	SELECT LISTAGG(first_name, ', ') WITHIN GROUP (ORDER BY first_name) FROM employees;
+MEDIAN()	Calcula la mediana de una columna numérica.	SELECT MEDIAN(salary) FROM employees;
+STDDEV()	Devuelve la desviación estándar de una columna numérica.	SELECT STDDEV(salary) FROM employees;
+VARIANCE()	Calcula la varianza de una columna numérica.	SELECT VARIANCE(salary) FROM employees;
+FIRST_VALUE()	Devuelve el primer valor de un conjunto ordenado.	SELECT FIRST_VALUE(salary) OVER (ORDER BY salary) FROM employees;
+LAST_VALUE()	Devuelve el último valor de un conjunto ordenado.	SELECT LAST_VALUE(salary) OVER (ORDER BY salary) FROM employees;
+RANK()	Asigna un ranking a cada fila dentro de un grupo.	SELECT salary, RANK() OVER (ORDER BY salary DESC) FROM employees;
