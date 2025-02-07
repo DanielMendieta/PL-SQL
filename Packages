@@ -41,11 +41,52 @@ END;
 /
 
 
+--------------------------------------------------------------------------------------------------------
+
+Ejercicio sencillo:
+Consigna
+Crea un paquete llamado empleado_pkg.
+En la especificación, declara un procedimiento llamado mostrar_empleado que reciba un EMPLOYEE_ID y 
+muestre el nombre y salario del empleado.
+Implementa el procedimiento en el cuerpo del paquete.
+Ejecuta el procedimiento para probarlo.
 
 
 
+SET SERVEROUTPUT ON;
 
+CREATE OR REPLACE PACKAGE empleado_pkg AS
+PROCEDURE mostrar_empleado (EMPLOYEE_ID IN NUMBER);
+END empleado_pkg;
+/
 
+CREATE OR REPLACE PACKAGE BODY Empleado_Pkg AS  
+PROCEDURE mostrar_empleado (EMPLOYEE_ID IN NUMBER) IS
+
+Nombre_Empleado EMPLOYEES.FIRST_NAME%TYPE;
+Salario_Empleado EMPLOYEES.SALARY%TYPE;   
+
+BEGIN 
+SELECT FIRST_NAME AS Empleado,
+SALARY AS Salario
+INTO Nombre_Empleado, Salario_Empleado      
+FROM EMPLOYEES
+WHERE EMPLOYEE_ID = empleado_pkg.mostrar_empleado.EMPLOYEE_ID;
+    
+
+DBMS_OUTPUT.PUT_LINE(Nombre_Empleado || Salario_Empleado);
+
+END;
+
+END Empleado_Pkg;
+/
+
+BEGIN
+
+Empleado_Pkg.mostrar_empleado(100);
+
+END;
+/
 
 
 
