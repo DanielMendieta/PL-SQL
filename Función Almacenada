@@ -33,7 +33,52 @@ BEGIN
 END;
 /
 
+---------------------------------------------------------------------------------------------------
 
+2 - Crea una función almacenada llamada Obtener_Bono_Empleado que reciba el ID de un empleado y devuelva el monto de su bono.
+
+Reglas del cálculo del bono:
+Si el salario del empleado es menor a 3000, el bono será del 15% de su salario.
+Si el salario está entre 3000 y 7000, el bono será del 10% de su salario.
+Si el salario es mayor a 7000, el bono será del 5% de su salario.
+Si el empleado no existe en la base de datos, la función debe devolver NULL.
+
+
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE FUNCTION Obtener_Bono_Empleado (
+  Empleado_ID IN NUMBER
+) RETURN NUMBER IS
+    V_Number NUMBER;
+BEGIN
+    SELECT SALARY
+    INTO V_Number 
+    FROM EMPLOYEES 
+    WHERE EMPLOYEE_ID = Empleado_ID;
+
+    -- Si el salario es menor que 3000, aplicamos un bono del 15%.
+    IF V_Number < 3000 THEN
+        RETURN V_Number * 1.15;
+    ELSIF V_Number BETWEEN 3000 AND 7000 THEN
+        RETURN V_Number * 1.10;
+    ELSIF V_Number > 7000 THEN
+        RETURN V_Number * 1.05;
+    END IF;
+    
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('¡Error! No se encontró el empleado.');
+        RETURN NULL;  -- Devuelve NULL si no se encuentra el empleado.
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLCODE || ' - ' || SQLERRM);
+        RETURN -1;  -- Retorna un valor de error en caso de excepción.
+END Obtener_Bono_Empleado;
+/
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Bono Aplicado: ' || Obtener_Bono_Empleado(2));
+END;
+/
 
 
 
