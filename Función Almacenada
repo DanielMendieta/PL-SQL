@@ -1,0 +1,48 @@
+1 - Crear una función que devuelva el salario promedio de un departamento
+La función recibe el DEPARTMENT_ID y devuelve el salario promedio de los empleados de ese departamento.
+
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE FUNCTION Salario_Promedio (
+  Departamento_ID IN NUMBER
+) RETURN NUMBER IS
+    V_Number NUMBER;
+BEGIN
+    SELECT AVG(SALARY) 
+    INTO V_Number 
+    FROM EMPLOYEES 
+    WHERE DEPARTMENT_ID = Departamento_ID;
+    
+    -- Si el promedio es NULL (porque no hay empleados en el departamento), devolvemos 0.
+    IF V_Number IS NULL THEN
+        RETURN 0;
+    END IF;
+    
+    RETURN V_Number;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLCODE || ' - ' || SQLERRM);
+        RETURN -1;  -- Retornar un valor de error en caso de excepción.
+END Salario_Promedio;
+/
+
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('El salario promedio del departamento 50 es: ' || Salario_Promedio(50));
+END;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
