@@ -1,5 +1,14 @@
  ¿Cuándo usar Cursores?
 
+Un cursor explícito se declara manualmente, se abre, obtiene datos y se cierra, 
+se usan cuando se necesita recorrer varias filas en un bloque PL/SQL, 
+mientras que los implícitos solo manejan una sola fila por vez.
+
+Un cursor implícito lo maneja automáticamente Oracle cuando se ejecuta una consulta SELECT INTO, INSERT, UPDATE o DELETE.
+
+
+
+
 ✅ Cuando necesitas procesar filas una por una.
 ✅ Para recorrer datos en bucles dentro de PL/SQL.
 ✅ Cuando una consulta devuelve varias filas y necesitas control sobre ellas.
