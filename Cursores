@@ -187,6 +187,42 @@ END;
 
 EXEC prueba(105);
 
+--------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE etl_procesar_empleados IS
+    CURSOR c_empleados IS 
+        SELECT id, nombre, salario FROM empleados_raw;  -- Extraer todos los empleados
+BEGIN
+    FOR reg IN c_empleados LOOP
+        -- Validar si el salario es nulo o negativo
+        IF reg.salario IS NULL OR reg.salario < 0 THEN
+            INSERT INTO auditoria_etl (empleado_id, mensaje)
+            VALUES (reg.id, 'Error: Salario inválido, no procesado.');
+            CONTINUE;  -- Salta a la siguiente iteración del loop
+        END IF;
+
+        -- Insertar en la tabla correspondiente según el salario
+        IF reg.salario < 3000 THEN
+            INSERT INTO empleados_bajo (id, nombre, salario)
+            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
+        ELSIF reg.salario BETWEEN 3000 AND 7000 THEN
+            INSERT INTO empleados_medio (id, nombre, salario)
+            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
+        ELSE
+            INSERT INTO empleados_alto (id, nombre, salario)
+            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
+        END IF;
+
+        -- Registrar en auditoría
+        INSERT INTO auditoria_etl (empleado_id, mensaje)
+        VALUES (reg.id, 'Empleado procesado correctamente.');
+
+    END LOOP;
+
+    COMMIT;
+END;
+/
+
 
 
 
