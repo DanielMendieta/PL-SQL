@@ -1,0 +1,128 @@
+/* 
+📌 Escenario:
+Una empresa necesita limpiar y cargar información de empleados en una nueva tabla.
+
+Tabla de origen: empleados_raw (datos sin procesar).
+Tabla de destino: empleados_limpios (datos limpios y transformados).
+Requisitos de transformación:
+Los nombres deben guardarse en mayúsculas.
+Los salarios deben aumentar un 10% si son menores a 3000.
+No se deben insertar empleados con salario nulo o negativo.
+Se debe usar:
+Procedimientos almacenados.
+Cursores para procesar los datos.
+Un Job para ejecutar la carga automáticamente cada día a las 2 AM.
+*/
+
+1️⃣ Crear las Tablas
+
+-- Tabla de empleados sin procesar (origen)
+CREATE TABLE empleados_raw (
+    id NUMBER PRIMARY KEY,
+    nombre VARCHAR2(100),
+    salario NUMBER
+);
+
+-- Tabla de empleados procesados (destino)
+CREATE TABLE empleados_limpios (
+    id NUMBER PRIMARY KEY,
+    nombre VARCHAR2(100),
+    salario NUMBER
+);
+--------------------------------------------------------------------------------------------------------------------------
+2️⃣ Crear el Procedimiento ETL
+
+CREATE OR REPLACE PROCEDURE etl_cargar_empleados IS
+    CURSOR c_empleados IS 
+        SELECT id, nombre, salario 
+        FROM empleados_raw 
+        WHERE salario IS NOT NULL AND salario > 0;  -- Filtrar datos sucios
+BEGIN
+    FOR reg IN c_empleados LOOP
+        INSERT INTO empleados_limpios (id, nombre, salario)
+        VALUES (reg.id, UPPER(reg.nombre), 
+                CASE WHEN reg.salario < 3000 THEN reg.salario * 1.10 ELSE reg.salario END);
+    END LOOP;
+    
+    COMMIT;
+END;
+/
+
+📌 ¿Qué hace este procedimiento?
+✔ Usa un cursor para recorrer los datos.
+✔ Convierte los nombres a mayúsculas.
+✔ Aumenta el 10% los salarios menores a 3000.
+✔ Filtra salarios negativos o nulos.
+✔ Inserta los datos limpios en empleados_limpios.
+--------------------------------------------------------------------------------------------------------------------------
+
+3️⃣ Crear un Job para ejecutar el ETL automáticamente
+
+BEGIN
+    DBMS_SCHEDULER.create_job (
+        job_name        => 'JOB_ETL_EMPLEADOS',
+        job_type        => 'STORED_PROCEDURE',
+        job_action      => 'ETL_CARGAR_EMPLEADOS',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=DAILY; BYHOUR=02; BYMINUTE=0; BYSECOND=0',
+        enabled         => TRUE
+    );
+END;
+/
+
+
+📌 ¿Qué hace este Job?
+✔ Ejecuta el ETL automáticamente cada día a las 2 AM.
+✔ Evita la ejecución manual del procedimiento.
+--------------------------------------------------------------------------------------------------------------------------
+
+4️⃣ Probar el ETL
+
+-- Insertar datos sin procesar
+INSERT INTO empleados_raw VALUES (1, 'Carlos López', 2500);
+INSERT INTO empleados_raw VALUES (2, 'Ana Méndez', 3200);
+INSERT INTO empleados_raw VALUES (3, 'Pedro Gómez', NULL);
+INSERT INTO empleados_raw VALUES (4, 'Laura Pérez', -500);  -- Salario inválido
+
+COMMIT;
+
+-- Ejecutar el ETL manualmente
+BEGIN
+    etl_cargar_empleados;
+END;
+/
+
+-- Verificar los datos procesados
+SELECT * FROM empleados_limpios;
+
+
+📌 ¿Qué pasará al ejecutar esto?
+✔ Carlos López tendrá su salario aumentado un 10%.
+✔ Ana Méndez se insertará sin cambios.
+✔ Pedro Gómez y Laura Pérez no se insertarán por datos inválidos.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
