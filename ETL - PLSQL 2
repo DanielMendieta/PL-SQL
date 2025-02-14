@@ -1,0 +1,145 @@
+📌 Escenario:
+Una empresa necesita procesar los datos de empleados y registrarlos en diferentes tablas según su salario.
+
+1️⃣ Tabla de origen: empleados_raw (datos sin procesar).
+2️⃣ Tablas de destino:
+
+empleados_bajo → Empleados con salario menor a 3000.
+empleados_medio → Empleados con salario entre 3000 y 7000.
+empleados_alto → Empleados con salario mayor a 7000.
+3️⃣ Requisitos del ETL:
+Cada empleado debe insertarse en la tabla correcta según su salario.
+Se debe registrar cada inserción en una tabla de auditoría (auditoria_etl).
+Si un empleado tiene un salario negativo o nulo, no se debe procesar y debe registrarse el error en la auditoría.
+4️⃣ Se debe usar:
+Cursores (porque cada fila requiere lógica personalizada antes de insertarse).
+Procedimientos almacenados para estructurar el proceso.
+Tabla de auditoría para registrar el procesamiento.
+
+-- Tabla de empleados sin procesar (origen)
+CREATE TABLE empleados_raw (
+    id NUMBER PRIMARY KEY,
+    nombre VARCHAR2(100),
+    salario NUMBER
+);
+
+-- Tablas de destino según rango salarial
+CREATE TABLE empleados_bajo (
+    id NUMBER PRIMARY KEY,
+    nombre VARCHAR2(100),
+    salario NUMBER
+);
+
+CREATE TABLE empleados_medio (
+    id NUMBER PRIMARY KEY,
+    nombre VARCHAR2(100),
+    salario NUMBER
+);
+
+CREATE TABLE empleados_alto (
+    id NUMBER PRIMARY KEY,
+    nombre VARCHAR2(100),
+    salario NUMBER
+);
+
+-- Tabla de auditoría para registrar el procesamiento
+CREATE TABLE auditoria_etl (
+    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    empleado_id NUMBER,
+    mensaje VARCHAR2(200),
+    fecha_procesado DATE DEFAULT SYSDATE
+);
+
+
+2️⃣ Crear el Procedimiento con Cursor
+
+CREATE OR REPLACE PROCEDURE etl_procesar_empleados IS
+    CURSOR c_empleados IS 
+        SELECT id, nombre, salario FROM empleados_raw;  -- Extraer todos los empleados
+BEGIN
+    FOR reg IN c_empleados LOOP
+        -- Validar si el salario es nulo o negativo
+        IF reg.salario IS NULL OR reg.salario < 0 THEN
+            INSERT INTO auditoria_etl (empleado_id, mensaje)
+            VALUES (reg.id, 'Error: Salario inválido, no procesado.');
+            CONTINUE;  -- Salta a la siguiente iteración del loop
+        END IF;
+
+        -- Insertar en la tabla correspondiente según el salario
+        IF reg.salario < 3000 THEN
+            INSERT INTO empleados_bajo (id, nombre, salario)
+            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
+        ELSIF reg.salario BETWEEN 3000 AND 7000 THEN
+            INSERT INTO empleados_medio (id, nombre, salario)
+            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
+        ELSE
+            INSERT INTO empleados_alto (id, nombre, salario)
+            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
+        END IF;
+
+        -- Registrar en auditoría
+        INSERT INTO auditoria_etl (empleado_id, mensaje)
+        VALUES (reg.id, 'Empleado procesado correctamente.');
+
+    END LOOP;
+
+    COMMIT;
+END;
+/
+
+
+📌 ¿Por qué es NECESARIO un Cursor aquí?
+✔ Cada empleado debe insertarse en una tabla diferente según su salario.
+✔ Si el salario es inválido, el registro no debe procesarse, pero sí registrarse el error.
+✔ Se ejecutan múltiples inserciones por cada empleado (en la tabla correcta + auditoría).
+✔ El uso de INSERT INTO SELECT no funcionaría aquí, porque cada fila tiene reglas distintas.
+
+
+-- Insertar datos de prueba
+INSERT INTO empleados_raw VALUES (1, 'Carlos López', 2500);
+INSERT INTO empleados_raw VALUES (2, 'Ana Méndez', 5000);
+INSERT INTO empleados_raw VALUES (3, 'Pedro Gómez', 8000);
+INSERT INTO empleados_raw VALUES (4, 'Laura Pérez', NULL);  -- Salario inválido
+INSERT INTO empleados_raw VALUES (5, 'Jorge Ruiz', -1000);  -- Salario inválido
+
+COMMIT;
+
+-- Ejecutar el ETL
+BEGIN
+    etl_procesar_empleados;
+END;
+/
+
+-- Verificar los resultados
+SELECT * FROM empleados_bajo;
+SELECT * FROM empleados_medio;
+SELECT * FROM empleados_alto;
+SELECT * FROM auditoria_etl;
+
+
+📌 Resultado esperado después de ejecutar el ETL
+📊 Tablas de destino
+empleados_bajo tendrá a Carlos López (2500) → convertido a mayúsculas.
+empleados_medio tendrá a Ana Méndez (5000).
+empleados_alto tendrá a Pedro Gómez (8000).
+Laura Pérez y Jorge Ruiz NO serán insertados porque sus salarios son inválidos.
+📊 Tabla de auditoría (auditoria_etl)
+Carlos, Ana y Pedro tendrán el mensaje "Empleado procesado correctamente."
+Laura y Jorge tendrán "Error: Salario inválido, no procesado."
+
+📌 Conclusión
+✔ Aquí SÍ se justifica el uso del cursor porque cada fila tiene un procesamiento diferente.
+✔ No se puede hacer con INSERT INTO SELECT, porque no puedes insertar en múltiples tablas de destino en una sola consulta.
+✔ El cursor permite validar los datos antes de insertarlos y registrar los errores en la auditoría.
+
+Este es un ETL realista con reglas de negocio. ¿Te gustaría agregar más validaciones o probar algo diferente?
+
+
+
+
+
+
+
+
+
+
