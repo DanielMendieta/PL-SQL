@@ -1,0 +1,18 @@
+1 - Obtén una lista de empleados de la tabla EMPLOYEES que cumplan con los siguientes criterios:
+
+1️⃣ Pertenecen a un departamento que tiene más de 5 empleados.
+2️⃣ Su salario está por encima del salario promedio de su departamento.
+3️⃣ Ordena los resultados de mayor a menor salario.
+
+SELECT FIRST_NAME || ' ' || LAST_NAME AS Nombre_Completo,
+       DEPARTMENT_ID AS Departamento,    
+       SALARY AS Salario
+FROM EMPLOYEES
+WHERE SALARY > (SELECT AVG(SALARY) 
+                FROM EMPLOYEES 
+                WHERE EMPLOYEES.DEPARTMENT_ID = EMPLOYEES.DEPARTMENT_ID)
+AND DEPARTMENT_ID IN (SELECT DEPARTMENT_ID 
+                      FROM EMPLOYEES 
+                      GROUP BY DEPARTMENT_ID 
+                      HAVING COUNT(*) > 5)
+ORDER BY SALARY DESC;
