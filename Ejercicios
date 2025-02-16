@@ -95,6 +95,37 @@ Nombre := 'Daniel';
 DBMS_OUTPUT.PUT_LINE(Nombre);
 END;
 /
+-------------------------------------------------------------------------------------------------------------------
+
+Para calcular el promedio de salario por departamento esta primera opcion a nivel costo es mucho mejor:
+
+SELECT 
+    E.FIRST_NAME AS Nombre,
+    E.LAST_NAME AS Apellido,
+    E.SALARY AS Salario,
+    D.DEPARTMENT_ID,
+    AVG(E.SALARY) OVER (PARTITION BY E.DEPARTMENT_ID) AS Salario_Promedio
+FROM EMPLOYEES E
+JOIN DEPARTMENTS D ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
+ORDER BY Salario;
+
+SEGUNDA OPCION:
+
+SELECT 
+    E.FIRST_NAME AS Nombre,
+    E.LAST_NAME AS Apellido,
+    E.SALARY AS Salario,
+    E.DEPARTMENT_ID,
+    (SELECT AVG(SALARY) 
+     FROM EMPLOYEES 
+     WHERE DEPARTMENT_ID = E.DEPARTMENT_ID) AS Salario_Promedio
+FROM EMPLOYEES E
+ORDER BY Salario;
+
+
+
+
+
 
 
 
