@@ -1,5 +1,5 @@
 Tablas disponibles en HR
-EMPLOYEES – Contiene información de los empleados.
+--EMPLOYEES – Contiene información de los empleados.
 
 EMPLOYEE_ID (ID del empleado)
 FIRST_NAME (Nombre)
@@ -12,38 +12,44 @@ SALARY (Salario)
 COMMISSION_PCT (Comisión)
 MANAGER_ID (ID del gerente)
 DEPARTMENT_ID (ID del departamento)
-DEPARTMENTS – Contiene información de los departamentos.
+
+--DEPARTMENTS – Contiene información de los departamentos.
 
 DEPARTMENT_ID (ID del departamento)
 DEPARTMENT_NAME (Nombre del departamento)
 MANAGER_ID (ID del gerente del departamento)
 LOCATION_ID (ID de la ubicación)
-JOBS – Contiene información sobre los puestos de trabajo.
+
+--JOBS – Contiene información sobre los puestos de trabajo.
 
 JOB_ID (ID del puesto)
 JOB_TITLE (Título del puesto)
 MIN_SALARY (Salario mínimo)
 MAX_SALARY (Salario máximo)
-JOB_HISTORY – Registra el historial de los empleados en diferentes puestos.
+
+--JOB_HISTORY – Registra el historial de los empleados en diferentes puestos.
 
 EMPLOYEE_ID (ID del empleado)
 START_DATE (Fecha de inicio)
 END_DATE (Fecha de fin)
 JOB_ID (ID del puesto)
 DEPARTMENT_ID (ID del departamento)
-LOCATIONS – Contiene información de las ubicaciones.
+
+--LOCATIONS – Contiene información de las ubicaciones.
 
 LOCATION_ID (ID de la ubicación)
 STREET_ADDRESS (Dirección)
 CITY (Ciudad)
 STATE_PROVINCE (Estado/Provincia)
 COUNTRY_ID (ID del país)
-COUNTRIES – Contiene información de los países.
+
+--COUNTRIES – Contiene información de los países.
 
 COUNTRY_ID (ID del país)
 COUNTRY_NAME (Nombre del país)
 REGION_ID (ID de la región)
-REGIONS – Contiene información de las regiones.
+
+--REGIONS – Contiene información de las regiones.
 
 REGION_ID (ID de la región)
 REGION_NAME (Nombre de la región)
