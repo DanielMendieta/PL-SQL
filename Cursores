@@ -224,16 +224,51 @@ END;
 /
 
 
+--------------------------------------------------------------------------------------------------
 
+DECLARE  
+    CURSOR c_empleados IS 
+    SELECT 
+        E.FIRST_NAME AS Nombre,
+        E.LAST_NAME AS Apellido,
+        E.SALARY AS Salario,
+        E.DEPARTMENT_ID,
+        (SELECT AVG(SALARY) 
+         FROM EMPLOYEES 
+         WHERE DEPARTMENT_ID = E.DEPARTMENT_ID) AS Salario_Promedio
+    FROM EMPLOYEES E
+    ORDER BY E.DEPARTMENT_ID, Salario;  -- Ordenado por departamento
 
+    v_nombre EMPLOYEES.FIRST_NAME%TYPE; 
+    v_apellido EMPLOYEES.LAST_NAME%TYPE; 
+    v_salario EMPLOYEES.SALARY%TYPE; 
+    v_departamento EMPLOYEES.DEPARTMENT_ID%TYPE;
+    v_salario_promedio EMPLOYEES.SALARY%TYPE; 
 
+BEGIN  
+    OPEN c_empleados; 
+    LOOP  
+        FETCH c_empleados INTO v_nombre, v_apellido, v_salario, v_departamento, v_salario_promedio; 
+        EXIT WHEN c_empleados%NOTFOUND;  
 
-
-
-
-
-
-
-
+        -- Manejo de valores NULL en salario promedio
+        IF v_salario < NVL(v_salario_promedio, 0) THEN
+            DBMS_OUTPUT.PUT_LINE('Empleado: ' || v_nombre || ' ' || v_apellido ||
+                                 ' | Salario: ' || v_salario ||
+                                 ' | Promedio: ' || NVL(v_salario_promedio, 0) ||
+                                 ' | Estado: Por debajo del promedio');
+        ELSE 
+            DBMS_OUTPUT.PUT_LINE('Empleado: ' || v_nombre || ' ' || v_apellido ||
+                                 ' | Salario: ' || v_salario ||
+                                 ' | Promedio: ' || NVL(v_salario_promedio, 0) ||
+                                 ' | Estado: Salario acorde o superior');
+        END IF;
+        
+    END LOOP; 
+    
+    CLOSE c_empleados;   
+END; 
+ 
+/
 
 
