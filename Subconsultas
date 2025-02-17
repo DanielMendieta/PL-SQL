@@ -16,3 +16,11 @@ AND DEPARTMENT_ID IN (SELECT DEPARTMENT_ID
                       GROUP BY DEPARTMENT_ID 
                       HAVING COUNT(*) > 5)
 ORDER BY SALARY DESC;
+
+2 - Consigna: Encuentra los nombres de los empleados cuyo salario es superior al salario promedio de todos los empleados en su departamento.
+
+SELECT E.FIRST_NAME || '  ' || E.LAST_NAME AS Nombre_Completo,
+E.DEPARTMENT_ID AS DEPARTAMENTO,    
+E.Salary AS Salario
+FROM employees E
+WHERE Salary > (select avg(salary) from employees where E.DEPARTMENT_ID = DEPARTMENT_ID);
