@@ -16,7 +16,7 @@ AND DEPARTMENT_ID IN (SELECT DEPARTMENT_ID
                       GROUP BY DEPARTMENT_ID 
                       HAVING COUNT(*) > 5)
 ORDER BY SALARY DESC;
-
+-----------------------------------------------------------------------------------------------------------------------------
 2 - Consigna: Encuentra los nombres de los empleados cuyo salario es superior al salario promedio de todos los empleados en su departamento.
 
 SELECT E.FIRST_NAME || '  ' || E.LAST_NAME AS Nombre_Completo,
@@ -24,3 +24,24 @@ E.DEPARTMENT_ID AS DEPARTAMENTO,
 E.Salary AS Salario
 FROM employees E
 WHERE Salary > (select avg(salary) from employees where E.DEPARTMENT_ID = DEPARTMENT_ID);
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+3 - Consigna: Muestra los empleados cuyo salario es superior al salario promedio de todos los empleados en el mismo país.
+
+SELECT E.FIRST_NAME || '  ' || E.LAST_NAME AS Nombre_Completo,
+       E.SALARY AS Salario,
+       D.DEPARTMENT_NAME AS Departamento,
+       L.CITY AS Ciudad,
+       C.COUNTRY_NAME AS Pais
+FROM EMPLOYEES E
+JOIN DEPARTMENTS D ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
+JOIN LOCATIONS L ON D.LOCATION_ID = L.LOCATION_ID
+JOIN COUNTRIES C ON L.COUNTRY_ID = C.COUNTRY_ID
+WHERE E.SALARY > (SELECT AVG(E2.SALARY)
+                   FROM EMPLOYEES E2
+                   JOIN DEPARTMENTS D2 ON E2.DEPARTMENT_ID = D2.DEPARTMENT_ID
+                   JOIN LOCATIONS L2 ON D2.LOCATION_ID = L2.LOCATION_ID
+                   WHERE L2.COUNTRY_ID = L.COUNTRY_ID);
+
+
