@@ -44,4 +44,24 @@ WHERE E.SALARY > (SELECT AVG(E2.SALARY)
                    JOIN LOCATIONS L2 ON D2.LOCATION_ID = L2.LOCATION_ID
                    WHERE L2.COUNTRY_ID = L.COUNTRY_ID);
 
+-----------------------------------------------------------------------------------------------------------------------------
+
+4 - Consigna: Encuentra los empleados que han trabajado más tiempo, que el empleado con el salario más alto.
+SELECT E.FIRST_NAME || ' ' || E.LAST_NAME AS Nombre_Completo,
+       E.HIRE_DATE AS Fecha_Contratacion,
+       E.SALARY AS Salario
+FROM EMPLOYEES E
+WHERE E.HIRE_DATE < (SELECT HIRE_DATE 
+                     FROM EMPLOYEES 
+                     WHERE SALARY = (SELECT MAX(SALARY) FROM EMPLOYEES));
+
+
+
+
+
+
+
+
+
+
 
