@@ -55,8 +55,28 @@ WHERE E.HIRE_DATE < (SELECT HIRE_DATE
                      FROM EMPLOYEES 
                      WHERE SALARY = (SELECT MAX(SALARY) FROM EMPLOYEES));
 
+-----------------------------------------------------------------------------------------------------------------------------
 
+5 - Consigna: Muestra el nombre de los empleados que no tienen un jefe asignado (es decir, el MANAGER_ID es NULL), 
+pero cuyo salario es superior al promedio de los empleados con jefe.
 
+SELECT FIRST_NAME || ' ' || LAST_NAME AS Nombre_Completo,
+Salary AS Salario
+FROM EMPLOYEES 
+WHERE MANAGER_ID IS NULL AND Salary > (SELECT AVG(Salary) FROM EMPLOYEES WHERE MANAGER_ID IS NOT NULL);
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+6 - Consigna: Encuentra los empleados cuyo salario es menor que el salario de cualquier empleado en el departamento de “Sales”.
+
+SELECT FIRST_NAME || ' ' || LAST_NAME AS Nombre_Completo, 
+       SALARY AS Salario
+FROM EMPLOYEES
+WHERE SALARY < ANY (
+    SELECT SALARY 
+    FROM EMPLOYEES 
+    WHERE DEPARTMENT_ID = (SELECT DEPARTMENT_ID FROM DEPARTMENTS WHERE DEPARTMENT_NAME = 'Sales')
+);
 
 
 
