@@ -78,6 +78,19 @@ WHERE SALARY < ANY (
     WHERE DEPARTMENT_ID = (SELECT DEPARTMENT_ID FROM DEPARTMENTS WHERE DEPARTMENT_NAME = 'Sales')
 );
 
+-----------------------------------------------------------------------------------------------------------------------------
+
+7 - Consigna: Muestra los empleados que tienen el mismo puesto de trabajo que el empleado con el salario más bajo en la compañía.
+
+SELECT E.FIRST_NAME || ' ' || E.LAST_NAME AS Nombre_Completo,
+       E.SALARY AS Salario,
+       J.JOB_TITLE AS Puesto_Trabajo
+FROM EMPLOYEES E
+JOIN JOBS J ON E.JOB_ID = J.JOB_ID
+WHERE E.JOB_ID = (SELECT JOB_ID 
+                  FROM EMPLOYEES 
+                  WHERE SALARY = (SELECT MIN(SALARY) FROM EMPLOYEES) 
+                  FETCH FIRST 1 ROW ONLY);
 
 
 
