@@ -93,6 +93,14 @@ WHERE E.JOB_ID = (SELECT JOB_ID
                   FETCH FIRST 1 ROW ONLY);
 
 
+-----------------------------------------------------------------------------------------------------------------------------
+
+8- Obtén una lista de los departamentos que no tienen empleados asignados en la tabla DEPARTMENTS.
+
+SELECT DEPARTMENT_ID, DEPARTMENT_NAME
+FROM DEPARTMENTS
+WHERE DEPARTMENT_ID NOT IN (SELECT DISTINCT DEPARTMENT_ID FROM EMPLOYEES)
+ORDER BY DEPARTMENT_NAME;
 
 
 
