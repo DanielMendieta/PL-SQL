@@ -95,14 +95,30 @@ WHERE E.JOB_ID = (SELECT JOB_ID
 
 -----------------------------------------------------------------------------------------------------------------------------
 
-8- Obtén una lista de los departamentos que no tienen empleados asignados en la tabla DEPARTMENTS.
+8 - Obtén una lista de los departamentos que no tienen empleados asignados en la tabla DEPARTMENTS.
 
 SELECT DEPARTMENT_ID, DEPARTMENT_NAME
 FROM DEPARTMENTS
 WHERE DEPARTMENT_ID NOT IN (SELECT DISTINCT DEPARTMENT_ID FROM EMPLOYEES)
 ORDER BY DEPARTMENT_NAME;
 
+-----------------------------------------------------------------------------------------------------------------------------
 
+9 - /* 
+Obtén una lista de los empleados que trabajan en el mismo departamento,
+que el empleado con EMPLOYEE_ID = 100 en la tabla EMPLOYEES.
+📌 Requisitos:
+✔ Usar una subconsulta para obtener el DEPARTMENT_ID del empleado con EMPLOYEE_ID = 100.
+✔ Mostrar el nombre completo (FIRST_NAME + LAST_NAME) y el DEPARTMENT_ID.
+✔ Excluir al empleado EMPLOYEE_ID = 100 de los resultados.
+✔ Ordenar los resultados alfabéticamente por FIRST_NAME.
+*/
+SELECT FIRST_NAME || ' ' || LAST_NAME AS Nombre_Completo,
+DEPARTMENT_ID AS Departamento
+FROM Employees
+WHERE DEPARTMENT_ID = (SELECT DEPARTMENT_ID FROM Employees WHERE EMPLOYEE_ID = 100)
+AND EMPLOYEE_ID <> 100    
+ORDER BY Nombre_Completo;
 
 
 
