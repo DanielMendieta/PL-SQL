@@ -120,5 +120,25 @@ WHERE DEPARTMENT_ID = (SELECT DEPARTMENT_ID FROM Employees WHERE EMPLOYEE_ID = 1
 AND EMPLOYEE_ID <> 100    
 ORDER BY Nombre_Completo;
 
+-----------------------------------------------------------------------------------------------------------------------------
+
+10 - /*📌 Ejercicio: Subconsulta para Encontrar los Empleados que No Tienen Compañeros en su Departamento
+Consigna:
+Obtén una lista de los empleados que son los únicos en su departamento en la tabla EMPLOYEES.
+📌 Requisitos:
+✔ Usar una subconsulta para contar cuántos empleados hay en cada departamento.
+✔ Mostrar el nombre completo (FIRST_NAME + LAST_NAME), el SALARY y el DEPARTMENT_ID.
+✔ Ordenar los resultados por DEPARTMENT_ID.
+*/
+
+SELECT FIRST_NAME || ' ' || LAST_NAME AS Nombre_Completo,
+       SALARY AS Salario,
+       DEPARTMENT_ID AS Departamento
+FROM EMPLOYEES 
+WHERE DEPARTMENT_ID IN (SELECT DEPARTMENT_ID 
+                        FROM EMPLOYEES  
+                        GROUP BY DEPARTMENT_ID 
+                        HAVING COUNT(EMPLOYEE_ID) = 1)
+ORDER BY DEPARTMENT_ID;
 
 
