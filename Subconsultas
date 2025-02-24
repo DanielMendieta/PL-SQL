@@ -143,7 +143,7 @@ ORDER BY DEPARTMENT_ID;
 
 -----------------------------------------------------------------------------------------------------------------------------
 
-11 - /*Ejercicio: Uso de EXISTS para Encontrar Empleados con Subordinados
+11 - Ejercicio: Uso de EXISTS para Encontrar Empleados con Subordinados
 Consigna:
 Obtén una lista de los empleados que tienen al menos un subordinado, es decir, 
 empleados cuyo EMPLOYEE_ID aparece como MANAGER_ID en la tabla EMPLOYEES.
@@ -151,7 +151,7 @@ empleados cuyo EMPLOYEE_ID aparece como MANAGER_ID en la tabla EMPLOYEES.
 ✔ Usar EXISTS para verificar si hay empleados cuyo MANAGER_ID es igual al EMPLOYEE_ID.
 ✔ Mostrar el nombre completo (FIRST_NAME + LAST_NAME) y el EMPLOYEE_ID.
 ✔ Ordenar los resultados alfabéticamente por FIRST_NAME.
-*/
+
 SELECT * FROM EMPLOYEES;
 SELECT EMPLOYEE_ID AS Empleado_ID,
        FIRST_NAME || ' ' || LAST_NAME AS Nombre_Completo
@@ -159,3 +159,18 @@ FROM EMPLOYEES E
 WHERE EXISTS (SELECT 1 FROM EMPLOYEES WHERE MANAGER_ID = E.EMPLOYEE_ID)
 ORDER BY FIRST_NAME;
 
+-----------------------------------------------------------------------------------------------------------------------------
+12 - Consigna:
+Obtén una lista de los departamentos que tienen al menos un empleado asignado en la tabla DEPARTMENTS.
+📌 Requisitos:
+✔ Usar EXISTS para verificar si un DEPARTMENT_ID en DEPARTMENTS tiene empleados en EMPLOYEES.
+✔ Mostrar el DEPARTMENT_ID y el DEPARTMENT_NAME.
+✔ Ordenar los resultados por DEPARTMENT_NAME.
+
+SELECT D.DEPARTMENT_ID AS Departamento_ID,
+       D.DEPARTMENT_NAME AS Nombre
+FROM DEPARTMENTS D
+WHERE EXISTS (SELECT 1 
+              FROM EMPLOYEES E 
+              WHERE E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+ORDER BY D.DEPARTMENT_NAME;
