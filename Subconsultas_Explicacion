@@ -1,0 +1,141 @@
+1️⃣ Subconsulta Escalar (Devuelve 1 solo valor)
+
+✔ Se usa cuando esperas un único resultado.
+✔ Normalmente se usa en el SELECT, WHERE o HAVING.
+
+🔹 Ejemplo: Obtener empleados con el salario más alto:
+
+SELECT FIRST_NAME, LAST_NAME, SALARY
+FROM EMPLOYEES
+WHERE SALARY = (SELECT MAX(SALARY) FROM EMPLOYEES);
+✅ Aquí la subconsulta devuelve un solo valor (el salario máximo).
+
+---------------------------------------------------------------------
+2️⃣ Subconsulta de Múltiples Valores
+
+✔ Se usa cuando la subconsulta devuelve varios resultados.
+✔ Se usa con IN, ANY, ALL, EXISTS.
+
+🔹 Ejemplo: Obtener empleados cuyo salario es mayor que al menos un empleado del departamento 50:
+
+SELECT FIRST_NAME, LAST_NAME, SALARY
+FROM EMPLOYEES
+WHERE SALARY > ANY (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT_ID = 50);
+
+✅ Aquí la subconsulta devuelve varios salarios y ANY los compara con cada fila de la consulta principal.
+
+---------------------------------------------------------------------
+
+3️⃣ Subconsulta Correlacionada
+
+✔ Se ejecuta una vez por cada fila de la consulta principal.
+✔ Usa valores de la consulta externa dentro de la subconsulta.
+
+🔹 Ejemplo: Obtener empleados cuyo salario es mayor que el promedio de su departamento:
+
+SELECT FIRST_NAME, LAST_NAME, SALARY, DEPARTMENT_ID
+FROM EMPLOYEES E
+WHERE SALARY > (SELECT AVG(SALARY) 
+                FROM EMPLOYEES 
+                WHERE DEPARTMENT_ID = E.DEPARTMENT_ID);
+                
+✅ Aquí la subconsulta se ejecuta para cada DEPARTMENT_ID.
+
+📌 Conclusión:
+
+    Si esperas un solo valor, usa = (SELECT ...).
+    Si esperas varios valores, usa IN, ANY, ALL o EXISTS.
+    Si necesitas comparar fila por fila, usa una subconsulta correlacionada.
+---------------------------------------------------------------------
+📌 ¿Cuándo y cómo usar ANY, ALL, IN y EXISTS?
+
+Estos comandos se usan para comparar valores con subconsultas, pero tienen diferencias clave en cómo hacen la comparación.
+
+1️⃣ IN → Cuando la subconsulta devuelve una lista de valores,se usa cuando queremos comparar con una lista de 
+valores devueltos por la subconsulta.
+
+✔ Se usa cuando la subconsulta devuelve múltiples valores y queremos verificar si un campo coincide con alguno de ellos.
+
+🔹 Ejemplo:
+Obtener empleados que trabajan en los departamentos 10, 20 o 30.
+
+SELECT FIRST_NAME, LAST_NAME, DEPARTMENT_ID
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM DEPARTMENTS WHERE LOCATION_ID = 1700);
+
+---------------------------------------------------------------------
+
+2️⃣ ANY → Cuando queremos comparar con al menos un valor de la subconsulta
+
+✔ Se usa cuando queremos que la condición se cumpla con al menos un valor devuelto por la subconsulta.
+✔ Requiere un operador de comparación (=, >, <, etc.).
+
+🔹 Ejemplo:
+Obtener empleados cuyo salario sea mayor que al menos un salario del departamento 50.
+
+SELECT FIRST_NAME, LAST_NAME, SALARY
+FROM EMPLOYEES
+WHERE SALARY > ANY (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT_ID = 50);
+
+📌 Si hay varios salarios en el departamento 50, ANY compara con el menor de ellos.
+
+---------------------------------------------------------------------
+
+3️⃣ ALL → Cuando queremos comparar con todos los valores de la subconsulta
+
+✔ Se usa cuando queremos que la condición se cumpla con todos los valores devueltos por la subconsulta.
+✔ Requiere un operador de comparación (=, >, <, etc.).
+
+🔹 Ejemplo:
+Obtener empleados cuyo salario sea mayor que todos los salarios del departamento 30
+
+SELECT FIRST_NAME, LAST_NAME, SALARY
+FROM EMPLOYEES
+WHERE SALARY > ALL (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT_ID = 30);
+📌 Aquí se compara con el salario más alto del departamento 30.
+
+---------------------------------------------------------------------
+
+4️⃣ EXISTS → Cuando solo necesitamos verificar si la subconsulta devuelve filas
+
+✔ Se usa cuando no nos importa el valor devuelto por la subconsulta, sino solo si existe o no un resultado.
+✔ Más eficiente en bases de datos grandes, porque detiene la búsqueda en cuanto encuentra una coincidencia.
+
+🔹 Ejemplo:
+Obtener los departamentos que tienen empleados asignados.
+
+SELECT DEPARTMENT_ID, DEPARTMENT_NAME
+FROM DEPARTMENTS D
+WHERE EXISTS (SELECT 1 FROM EMPLOYEES E WHERE E.DEPARTMENT_ID = D.DEPARTMENT_ID);
+
+📌 Aquí EXISTS solo verifica si EMPLOYEES tiene al menos un empleado en ese DEPARTMENT_ID.
+
+Comando	¿Cuándo usarlo?	Ejemplo
+IN	Comparar con una lista de valores de la subconsulta.	WHERE DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM DEPARTMENTS WHERE LOCATION_ID = 1700);
+ANY	Comparar con al menos un valor de la subconsulta.	WHERE SALARY > ANY (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT_ID = 50);
+ALL	Comparar con todos los valores de la subconsulta.	WHERE SALARY > ALL (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT_ID = 30);
+EXISTS	Solo verificar si la subconsulta devuelve filas.	WHERE EXISTS (SELECT 1 FROM EMPLOYEES WHERE DEPARTMENT_ID = D.DEPARTMENT_ID);z
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
