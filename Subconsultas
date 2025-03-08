@@ -174,3 +174,28 @@ WHERE EXISTS (SELECT 1
               FROM EMPLOYEES E 
               WHERE E.DEPARTMENT_ID = D.DEPARTMENT_ID)
 ORDER BY D.DEPARTMENT_NAME;
+
+-----------------------------------------------------------------------------------------------------------------------------
+13 - Consigna:
+
+Obtén una lista de los empleados que trabajan en un departamento donde hay más de 5 empleados en la tabla EMPLOYEES.
+
+📌 Instrucciones:
+✔ Usar EXISTS o IN para verificar qué DEPARTMENT_ID tienen más de 5 empleados.
+✔ Mostrar el nombre completo (FIRST_NAME + LAST_NAME), el SALARY y el DEPARTMENT_ID.
+✔ Ordenar los resultados por DEPARTMENT_ID ASC y luego por SALARY DESC.
+
+
+SELECT FIRST_NAME || ' ' || LAST_NAME AS Nombre_Completo,
+       SALARY AS Salario,
+       DEPARTMENT_ID AS Departamento
+FROM HR.EMPLOYEES E
+WHERE EXISTS (
+    SELECT 1 FROM HR.EMPLOYEES 
+    WHERE E.DEPARTMENT_ID = DEPARTMENT_ID 
+    GROUP BY DEPARTMENT_ID 
+    HAVING COUNT(EMPLOYEE_ID) > 5
+)
+ORDER BY Departamento ASC, Salario DESC;
+
+
