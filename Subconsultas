@@ -198,4 +198,27 @@ WHERE EXISTS (
 )
 ORDER BY Departamento ASC, Salario DESC;
 
+-----------------------------------------------------------------------------------------------------------------------------
+14 - Consigna:
+Obtén una lista de los empleados cuyo JOB_ID no se repite en la tabla EMPLOYEES, es decir, 
+que son los únicos con ese trabajo.
+
+📌 Instrucciones:
+✔ Usar EXISTS o IN para verificar qué JOB_ID tienen solo un empleado.
+✔ Mostrar el nombre completo (FIRST_NAME + LAST_NAME), el JOB_ID y el SALARY.
+✔ Ordenar los resultados por SALARY DESC.
+
+SELECT E.FIRST_NAME || ' ' || E.LAST_NAME AS Nombre_Completo,
+       E.SALARY AS Salario,
+       E.JOB_ID AS Job_ID
+FROM HR.EMPLOYEES E
+WHERE E.JOB_ID NOT IN (
+    SELECT JOB_ID 
+    FROM HR.EMPLOYEES 
+    GROUP BY JOB_ID 
+    HAVING COUNT(*) > 1
+)
+ORDER BY Salario DESC;
+
+
 
