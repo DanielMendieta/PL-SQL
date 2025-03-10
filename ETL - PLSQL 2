@@ -54,36 +54,56 @@ CREATE TABLE auditoria_etl (
 2️⃣ Crear el Procedimiento con Cursor
 
 CREATE OR REPLACE PROCEDURE etl_procesar_empleados IS
+    TYPE empleados_tab IS TABLE OF empleados_raw%ROWTYPE;
+    v_empleados empleados_tab;
+    v_lote CONSTANT NUMBER := 100; -- Define el tamaño del lote para commit en lotes
+
+    -- Cursor para extraer los empleados
     CURSOR c_empleados IS 
-        SELECT id, nombre, salario FROM empleados_raw;  -- Extraer todos los empleados
+        SELECT id, nombre, salario FROM empleados_raw;
+
 BEGIN
-    FOR reg IN c_empleados LOOP
-        -- Validar si el salario es nulo o negativo
-        IF reg.salario IS NULL OR reg.salario < 0 THEN
-            INSERT INTO auditoria_etl (empleado_id, mensaje)
-            VALUES (reg.id, 'Error: Salario inválido, no procesado.');
-            CONTINUE;  -- Salta a la siguiente iteración del loop
-        END IF;
+    OPEN c_empleados;
+    LOOP
+        FETCH c_empleados BULK COLLECT INTO v_empleados LIMIT v_lote;
+        EXIT WHEN v_empleados.COUNT = 0;
 
-        -- Insertar en la tabla correspondiente según el salario
-        IF reg.salario < 3000 THEN
-            INSERT INTO empleados_bajo (id, nombre, salario)
-            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
-        ELSIF reg.salario BETWEEN 3000 AND 7000 THEN
-            INSERT INTO empleados_medio (id, nombre, salario)
-            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
-        ELSE
-            INSERT INTO empleados_alto (id, nombre, salario)
-            VALUES (reg.id, UPPER(reg.nombre), reg.salario);
-        END IF;
+        FOR i IN 1..v_empleados.COUNT LOOP
+            BEGIN
+                -- Validar si el salario es nulo o negativo
+                IF v_empleados(i).salario IS NULL OR v_empleados(i).salario < 0 THEN
+                    INSERT INTO auditoria_etl (empleado_id, mensaje)
+                    VALUES (v_empleados(i).id, 'Error: Salario inválido, no procesado.');
+                    CONTINUE; -- Salta a la siguiente iteración
+                END IF;
 
-        -- Registrar en auditoría
-        INSERT INTO auditoria_etl (empleado_id, mensaje)
-        VALUES (reg.id, 'Empleado procesado correctamente.');
+                -- Insertar en la tabla correspondiente según el salario
+                IF v_empleados(i).salario < 3000 THEN
+                    INSERT INTO empleados_bajo (id, nombre, salario)
+                    VALUES (v_empleados(i).id, UPPER(v_empleados(i).nombre), v_empleados(i).salario);
+                ELSIF v_empleados(i).salario BETWEEN 3000 AND 7000 THEN
+                    INSERT INTO empleados_medio (id, nombre, salario)
+                    VALUES (v_empleados(i).id, UPPER(v_empleados(i).nombre), v_empleados(i).salario);
+                ELSE
+                    INSERT INTO empleados_alto (id, nombre, salario)
+                    VALUES (v_empleados(i).id, UPPER(v_empleados(i).nombre), v_empleados(i).salario);
+                END IF;
+
+                -- Registrar en auditoría
+                INSERT INTO auditoria_etl (empleado_id, mensaje)
+                VALUES (v_empleados(i).id, 'Empleado procesado correctamente.');
+
+            EXCEPTION
+                WHEN OTHERS THEN
+                    INSERT INTO auditoria_etl (empleado_id, mensaje)
+                    VALUES (v_empleados(i).id, 'Error en procesamiento: ' || SQLERRM);
+            END;
+        END LOOP;
+
+        COMMIT; -- Realiza commit en lotes
 
     END LOOP;
-
-    COMMIT;
+    CLOSE c_empleados;
 END;
 /
 
@@ -126,14 +146,26 @@ Laura Pérez y Jorge Ruiz NO serán insertados porque sus salarios son inválido
 📊 Tabla de auditoría (auditoria_etl)
 Carlos, Ana y Pedro tendrán el mensaje "Empleado procesado correctamente."
 Laura y Jorge tendrán "Error: Salario inválido, no procesado."
+-----------------------------------------------------------------------------------------------
 
-📌 Conclusión
-✔ Aquí SÍ se justifica el uso del cursor porque cada fila tiene un procesamiento diferente.
-✔ No se puede hacer con INSERT INTO SELECT, porque no puedes insertar en múltiples tablas de destino en una sola consulta.
-✔ El cursor permite validar los datos antes de insertarlos y registrar los errores en la auditoría.
+3️⃣  Creamos un Job para ejecutar el ETL automáticamente
 
-Este es un ETL realista con reglas de negocio. ¿Te gustaría agregar más validaciones o probar algo diferente?
+BEGIN
+    DBMS_SCHEDULER.create_job (
+        job_name        => 'JOB_ETL_EMPLEADOS',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN etl_procesar_empleados; END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=DAILY; BYHOUR=07; BYMINUTE=0; BYSECOND=0',
+        enabled         => TRUE
+    );
+END;
+/
 
+
+📌 ¿Qué hace este Job?
+✔ Ejecuta el ETL automáticamente cada día a las 7 AM.
+✔ Evita la ejecución manual del procedimiento.
 
 
 
