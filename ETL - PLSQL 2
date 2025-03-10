@@ -97,6 +97,7 @@ BEGIN
                 WHEN OTHERS THEN
                     INSERT INTO auditoria_etl (empleado_id, mensaje)
                     VALUES (v_empleados(i).id, 'Error en procesamiento: ' || SQLERRM);
+
             END;
         END LOOP;
 
