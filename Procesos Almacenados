@@ -186,7 +186,27 @@ begin
 end;
 /
 
+---------------------------------------------------------------------------------------------------------------
+Procedimiento almacenado llamado AUMENTAR_SALARIO que reciba dos parámetros: el ID de un empleado y un porcentaje de aumento. 
+El procedimiento debe actualizar el salario del empleado multiplicándolo por el porcentaje indicado y mostrar un mensaje de confirmación
 
+CREATE OR REPLACE PROCEDURE AUMENTAR_SALARIO(
+    ID_EMPLEADO IN NUMBER,
+    Porcentaje IN NUMBER
+)
+IS
+BEGIN
+    UPDATE HR.EMPLOYEES 
+    SET SALARY = SALARY * (1 + Porcentaje / 100)
+    WHERE EMPLOYEE_ID = ID_EMPLEADO;
+
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END AUMENTAR_SALARIO;
+/
 
 
 
