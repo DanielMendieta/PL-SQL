@@ -1,4 +1,4 @@
-Consigna
+1 - Consigna
 Crea un procedimiento en PL/SQL que realice lo siguiente:
 
 Identifique a los empleados con más de 5 años de antigüedad en la empresa.
@@ -52,7 +52,7 @@ END;
 
 
 -------------------------------------------------------------------------------------------------------------------
-SET SERVEROUTPUT ON 
+2 - SET SERVEROUTPUT ON 
 
 CREATE OR REPLACE PROCEDURE Saludar
 IS
@@ -63,7 +63,7 @@ END;
 
 EXEC Saludar;
 -------------------------------------------------------------------------------------------------------------------
-SET SERVEROUTPUT ON  
+3 - SET SERVEROUTPUT ON  
 CREATE OR REPLACE PROCEDURE Saludar_Usuario(
 Nombre IN varchar2(20)
 )
@@ -76,7 +76,7 @@ END;
 
 EXEC Saludar_Usuario ('Daniel');
 -------------------------------------------------------------------------------------------------------------------
-SET SERVEROUTPUT ON 
+4 - SET SERVEROUTPUT ON 
 CREATE OR REPLACE PROCEDURE Saludar_Completo(
     Nombre IN VARCHAR2,
     Apellido IN VARCHAR2
@@ -89,7 +89,7 @@ END;
 
 EXEC Saludar_Completo('Daniel', 'Mendieta');
 ---------------------------------------------------------------------------------------------------------------------
-SET SERVEROUTPUT ON 
+5 - SET SERVEROUTPUT ON 
 CREATE OR REPLACE PROCEDURE Evaluar_Numero(
 Numero IN NUMBER
 )
@@ -111,8 +111,7 @@ END;
 
 EXEC Evaluar_Numero (-1);
 ---------------------------------------------------------------------------------------------------------------
-
-Consigna del Ejercicio
+6 - Consigna del Ejercicio
 Crea un procedimiento almacenado en PL/SQL llamado Obtener_Total_Pedidos que reciba como parámetro el ID del cliente y 
 devuelva la suma total de sus pedidos.
 
@@ -153,8 +152,7 @@ END;
 EXEC Obtener_Total_Pedidos(5);
 
 ---------------------------------------------------------------------------------------------------------------
-
-CREATE OR REPLACE PROCEDURE CALC_TAX 
+7 - CREATE OR REPLACE PROCEDURE CALC_TAX 
 (EMPL IN EMPLOYEES.EMPLOYEE_ID%TYPE,
     T1 IN NUMBER)
 IS
@@ -187,7 +185,7 @@ end;
 /
 
 ---------------------------------------------------------------------------------------------------------------
-Procedimiento almacenado llamado AUMENTAR_SALARIO que reciba dos parámetros: el ID de un empleado y un porcentaje de aumento. 
+8 - Procedimiento almacenado llamado AUMENTAR_SALARIO que reciba dos parámetros: el ID de un empleado y un porcentaje de aumento. 
 El procedimiento debe actualizar el salario del empleado multiplicándolo por el porcentaje indicado y mostrar un mensaje de confirmación
 
 CREATE OR REPLACE PROCEDURE AUMENTAR_SALARIO(
@@ -208,6 +206,47 @@ EXCEPTION
 END AUMENTAR_SALARIO;
 /
 
+---------------------------------------------------------------------------------------------------------------
+
+9 - rear un procedimiento llamado ACTUALIZAR_SALARIO que reciba dos parámetros:
+
+EMPLOYEE_ID
+
+NUEVO_SALARIO
+
+El procedimiento debe actualizar el salario del empleado indicado.
+Si el empleado no existe, mostrar un mensaje de error con DBMS_OUTPUT.PUT_LINE.
+
+
+
+SET SERVEROUTPUT ON;
+
+create or replace procedure ACTUALIZAR_SALARIO (
+EMPLOYEE_ID IN NUMBER
+NUEVO_SALARIO IN NUMBER
+)
+IS
+
+BEGIN
+
+update employees set salary = ACTUALIZAR_SALARIO.NUEVO_SALARIO
+where employee_id = ACTUALIZAR_SALARIO.EMPLOYEE_ID
+
+IF SQL%ROWCOUNT = 0 THEN
+   DBMS_OUTPUT.PUT_LINE('Este empleado no existe');
+ELSE
+   DBMS_OUTPUT.PUT_LINE('Salario actualizado correctamente');
+END IF;
+
+
+END;
+/
+
+
+BEGIN
+    ACTUALIZAR_SALARIO(100, 100);
+END;
+/
 
 
 
