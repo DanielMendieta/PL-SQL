@@ -2,6 +2,14 @@
 EMPLOYEE_ID
 BONO (porcentaje en número, por ejemplo: 10 para un 10%)
 
+Este procedimiento debe:
+Verificar si el empleado existe.
+Si no existe, mostrar: "Empleado no encontrado"
+
+Si existe:
+Calcular el nuevo salario aplicando el bono.
+Actualizar el salario.
+
 SET SERVEROUTPUT ON;
 
 CREATE OR REPLACE PROCEDURE BONIFICAR_EMPLEADO (
