@@ -1,4 +1,39 @@
-1 - Consigna
+1 - Consigna Crear un procedimiento llamado BONIFICAR_EMPLEADO que reciba dos parámetros:
+EMPLOYEE_ID
+BONO (porcentaje en número, por ejemplo: 10 para un 10%)
+
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE PROCEDURE BONIFICAR_EMPLEADO (
+    EMPLOYEE_ID IN NUMBER,
+    BONO IN NUMBER
+)
+IS
+    SUELDO_ANTERIOR NUMBER := 0;
+    SUELDO_NUEVO    NUMBER := 0;
+BEGIN
+    SELECT SALARY INTO SUELDO_ANTERIOR
+    FROM EMPLOYEES
+    WHERE EMPLOYEE_ID = EMPLOYEE_ID;
+
+    SUELDO_NUEVO := SUELDO_ANTERIOR + (SUELDO_ANTERIOR * BONO / 100);
+
+    UPDATE EMPLOYEES 
+    SET SALARY = SUELDO_NUEVO
+    WHERE EMPLOYEE_ID = EMPLOYEE_ID;
+
+    DBMS_OUTPUT.PUT_LINE('Nuevo salario actualizado: ' || SUELDO_NUEVO);
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Empleado no encontrado');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
+END;
+/
+
+-------------------------------------------------------------------------------------------------------------------
+2 - Consigna
 Crea un procedimiento en PL/SQL que realice lo siguiente:
 
 Identifique a los empleados con más de 5 años de antigüedad en la empresa.
@@ -52,7 +87,7 @@ END;
 
 
 -------------------------------------------------------------------------------------------------------------------
-2 - SET SERVEROUTPUT ON 
+3 - SET SERVEROUTPUT ON 
 
 CREATE OR REPLACE PROCEDURE Saludar
 IS
@@ -63,7 +98,7 @@ END;
 
 EXEC Saludar;
 -------------------------------------------------------------------------------------------------------------------
-3 - SET SERVEROUTPUT ON  
+4 - SET SERVEROUTPUT ON  
 CREATE OR REPLACE PROCEDURE Saludar_Usuario(
 Nombre IN varchar2(20)
 )
@@ -76,7 +111,7 @@ END;
 
 EXEC Saludar_Usuario ('Daniel');
 -------------------------------------------------------------------------------------------------------------------
-4 - SET SERVEROUTPUT ON 
+5 - SET SERVEROUTPUT ON 
 CREATE OR REPLACE PROCEDURE Saludar_Completo(
     Nombre IN VARCHAR2,
     Apellido IN VARCHAR2
@@ -89,7 +124,7 @@ END;
 
 EXEC Saludar_Completo('Daniel', 'Mendieta');
 ---------------------------------------------------------------------------------------------------------------------
-5 - SET SERVEROUTPUT ON 
+6 - SET SERVEROUTPUT ON 
 CREATE OR REPLACE PROCEDURE Evaluar_Numero(
 Numero IN NUMBER
 )
@@ -111,7 +146,7 @@ END;
 
 EXEC Evaluar_Numero (-1);
 ---------------------------------------------------------------------------------------------------------------
-6 - Consigna del Ejercicio
+ 7 - Consigna del Ejercicio
 Crea un procedimiento almacenado en PL/SQL llamado Obtener_Total_Pedidos que reciba como parámetro el ID del cliente y 
 devuelva la suma total de sus pedidos.
 
@@ -152,7 +187,7 @@ END;
 EXEC Obtener_Total_Pedidos(5);
 
 ---------------------------------------------------------------------------------------------------------------
-7 - CREATE OR REPLACE PROCEDURE CALC_TAX 
+8 - CREATE OR REPLACE PROCEDURE CALC_TAX 
 (EMPL IN EMPLOYEES.EMPLOYEE_ID%TYPE,
     T1 IN NUMBER)
 IS
@@ -185,7 +220,7 @@ end;
 /
 
 ---------------------------------------------------------------------------------------------------------------
-8 - Procedimiento almacenado llamado AUMENTAR_SALARIO que reciba dos parámetros: el ID de un empleado y un porcentaje de aumento. 
+9 - Procedimiento almacenado llamado AUMENTAR_SALARIO que reciba dos parámetros: el ID de un empleado y un porcentaje de aumento. 
 El procedimiento debe actualizar el salario del empleado multiplicándolo por el porcentaje indicado y mostrar un mensaje de confirmación
 
 CREATE OR REPLACE PROCEDURE AUMENTAR_SALARIO(
@@ -208,7 +243,7 @@ END AUMENTAR_SALARIO;
 
 ---------------------------------------------------------------------------------------------------------------
 
-9 - rear un procedimiento llamado ACTUALIZAR_SALARIO que reciba dos parámetros:
+10 - crear un procedimiento llamado ACTUALIZAR_SALARIO que reciba dos parámetros:
 
 EMPLOYEE_ID
 
