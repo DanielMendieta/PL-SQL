@@ -291,6 +291,68 @@ BEGIN
 END;
 /
 
+---------------------------------------------------------------------------------------------------------------
+
+11 - Consigna:
+Crear un procedimiento llamado REGISTRAR_CAMBIO_SALARIO que reciba:
+EMPLOYEE_ID
+NUEVO_SALARIO
+
+Y que haga lo siguiente:
+Verifique si el empleado existe.
+Si no existe, mostrar: "Empleado no encontrado".
+
+Si existe:
+Guarde el salario anterior.
+Actualice el salario.
+
+Inserte un registro en una tabla llamada HISTORIAL_SALARIOS con:
+EMPLOYEE_ID
+SALARIO_ANTERIOR
+SALARIO_NUEVO
+FECHA_CAMBIO (usar SYSDATE)
+Mostrar: "Salario actualizado y registrado en historial."
+
+--CONSULTA:
+
+SET SERVEROUTPUT ON;
+CREATE OR REPLACE PROCEDURE REGISTRAR_CAMBIO_SALARIO (
+EMPLOYEE_ID IN NUMBER,
+NUEVO_SALARIO IN NUMBER
+)
+IS
+
+empleado NUMBER := 0;
+salario_anterior NUMBER := 0;
+
+BEGIN
+SELECT EMPLOYEE_ID, SALARY 
+INTO empleado, salario_anterior 
+FROM employees
+WHERE EMPLOYEE_ID = REGISTRAR_CAMBIO_SALARIO.EMPLOYEE_ID;
+
+UPDATE employees 
+SET SALARY = REGISTRAR_CAMBIO_SALARIO.NUEVO_SALARIO 
+WHERE  EMPLOYEE_ID = REGISTRAR_CAMBIO_SALARIO.EMPLOYEE_ID;
+
+INSERT INTO HISTORIAL_SALARIOS 
+VALUES (empleado, salario_anterior, REGISTRAR_CAMBIO_SALARIO.NUEVO_SALARIO, SYSDATE);
+DBMS_OUTPUT.PUT_LINE('Salario actualizado y registrado en historial.');
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Empleado no encontrado');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
+END;
+/
+
+-- Ejecutar el procedimiento
+BEGIN
+    REGISTRAR_CAMBIO_SALARIO(100, 50);
+END;
+/
+
 
 
 
