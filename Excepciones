@@ -1,3 +1,6 @@
+SELECT INTO sin resultados	WHEN NO_DATA_FOUND
+UPDATE, DELETE sin afectar filas	SQL%ROWCOUNT = 0
+-----------------------------------------------------------------------------------------------
 Las excepciones en PL/SQL son errores que ocurren en tiempo de ejecución. 
 Se manejan con un bloque especial para evitar que el programa falle de forma inesperada.
 
@@ -12,9 +15,7 @@ EXCEPTION
         -- Acción para cualquier otra excepción
 END;
 /
-
 -----------------------------------------------------------------------------------------------
-
 Excepción	Ocurre cuando...
 NO_DATA_FOUND	Una consulta no devuelve registros.
 TOO_MANY_ROWS	Una consulta devuelve más de un registro en SELECT INTO.
