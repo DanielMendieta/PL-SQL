@@ -102,39 +102,6 @@ END;
 /
 
 ---------------------------------------------------------------------------------------------------------
-Crear un procedimiento almacenado que actualice el salario de un empleado. 
-El procedimiento recibirá como parámetros el id_empleado y el nuevo salario.
-
-
-SET SERVEROUTPUT ON  
-
-CREATE OR REPLACE PROCEDURE actualizar_salario_empleado(
-    id_empleado IN NUMBER,
-    nuevo_salario IN DECIMAL
-)
-IS 
-BEGIN
-    -- Verificamos si el empleado existe
-    IF EXISTS (SELECT 1 FROM empleados WHERE id_empleado = id_empleado) THEN
-        UPDATE empleados 
-        SET salario = nuevo_salario
-        WHERE id_empleado = id_empleado;
-        DBMS_OUTPUT.PUT_LINE('Salario actualizado con éxito.');
-    ELSE
-        DBMS_OUTPUT.PUT_LINE('¡Error! No se encontró el empleado.');
-    END IF;
-
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Error inesperado: ' || SQLERRM);
-END;
-/
-
-
-
-
-
-
 
 
 
