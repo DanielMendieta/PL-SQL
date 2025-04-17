@@ -1,0 +1,10 @@
+1 - Crear un trigger AFTER INSERT sobre la tabla EMPLOYEES que muestre un mensaje cuando se agregue un nuevo empleado.
+
+CREATE OR REPLACE TRIGGER TR_NuevoEmpleado
+AFTER INSERT ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Nuevo empleado registrado: ' || :NEW.FIRST_NAME || ' ' || :NEW.LAST_NAME);
+END;
+/
+
