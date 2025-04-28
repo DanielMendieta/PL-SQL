@@ -1,3 +1,5 @@
+-- Ejercicios TRIGGER Complejidad de menor a mayor
+
 1 - Crear un trigger AFTER INSERT sobre la tabla EMPLOYEES que muestre un mensaje cuando se agregue un nuevo empleado.
 
 CREATE OR REPLACE TRIGGER TR_NuevoEmpleado
@@ -8,3 +10,17 @@ BEGIN
 END;
 /
 
+-----------------------------------------------------------------------------------------------------------------------------------
+
+2 - Crear un trigger BEFORE INSERT sobre la tabla EMPLOYEES que:
+    Antes de insertar un nuevo empleado,
+    Ponga el apellido (LAST_NAME) en mayúsculas automáticamente,
+    Sin necesidad de que quien inserta lo haga manualmente.
+
+CREATE OR REPLACE TRIGGER trg_mayuscula_apellido
+BEFORE INSERT ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+    :NEW.LAST_NAME := UPPER(:NEW.LAST_NAME);
+END;
+/
