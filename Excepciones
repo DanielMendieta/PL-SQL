@@ -70,10 +70,28 @@ END;
 ✔️ Puedes crear excepciones personalizadas con RAISE.
 ✔️ WHEN OTHERS captura cualquier error inesperado. 🚀
 
+-----------------------------------------------------------------------------------------------
 
+RAISE_APPLICATION_ERROR es un procedimiento incorporado en PL/SQL que te permite emitir errores definidos por el usuario con un número de error y un mensaje asociado. 
+Esto es fundamental para proporcionar información específica sobre los problemas que ocurren en tu código PL/SQL 
+y para que las aplicaciones que llaman a tu código puedan manejar estos errores de manera adecuada.
 
+Componentes:
+número_de_error: Un entero entre -20999 y -20000 (inclusive). Oracle reserva este rango para los errores definidos por el usuario. Es importante elegir un número dentro de este rango.
+mensaje: Una cadena de caracteres de hasta 2048 bytes que describe el error. Este mensaje será devuelto a la aplicación que llamó al bloque PL/SQL o será visible en la salida si se ejecuta directamente.
 
+CREATE OR REPLACE TRIGGER Actualizar_Salario
+BEFORE UPDATE ON EMPLOYEES
+FOR EACH ROW
+BEGIN
 
+IF :NEW.SALARY < :OLD.SALARY THEN
+ 	RAISE_APPLICATION_ERROR(-20001, 'El nuevo salario no puede ser menor al salario actual ');    
+
+END IF;
+
+END;
+/
 
 
 
