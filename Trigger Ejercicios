@@ -24,3 +24,35 @@ BEGIN
     :NEW.LAST_NAME := UPPER(:NEW.LAST_NAME);
 END;
 /
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+3 - Crear un trigger BEFORE INSERT sobre la tabla EMPLOYEES que: Evite insertar un nuevo empleado si ya existe otro con el mismo FIRST_NAME, LAST_NAME y DEPARTMENT_ID.
+
+CREATE OR REPLACE TRIGGER Empleados_Duplicados
+BEFORE INSERT ON EMPLOYEES
+FOR EACH ROW
+DECLARE
+  v_count NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO v_count
+  FROM EMPLOYEES
+  WHERE FIRST_NAME = :NEW.FIRST_NAME
+    AND LAST_NAME = :NEW.LAST_NAME
+    AND DEPARTMENT_ID = :NEW.DEPARTMENT_ID;
+
+  IF v_count > 0 THEN
+    RAISE_APPLICATION_ERROR(-20010, 'Empleado duplicado en el mismo departamento.');
+  END IF;
+END;
+/
+
+
+
+
+
+
+
+
+
+
