@@ -64,6 +64,36 @@ BEGIN
   END IF;
 END;
 /
+-----------------------------------------------------------------------------------------------------------------------------------
+5- Escribe un trigger que, cuando se actualice el salario de un empleado en la tabla EMPLEADOS, realice las siguientes acciones:
+
+Inserte un nuevo registro en la tabla HISTORIAL_SALARIOS con el employee_id, el salario anterior, el nuevo salario y la fecha de modificación.
+Si la diferencia entre el nuevo salario y el salario anterior es mayor al 20% del salario anterior, 
+inserta un registro en una tabla de auditoría llamada AUDITORIA_SALARIOS_ALTOS 
+
+CREATE OR REPLACE TRIGGER TRG_ACTUALIZACION_SALARIOS
+AFTER UPDATE OF SALARY ON EMPLOYEES -- Especificamos la columna SALARY
+FOR EACH ROW
+DECLARE
+    v_porcentaje_incremento NUMBER;
+BEGIN
+    -- 1. Insertar en HISTORIAL_SALARIOS
+    INSERT INTO HISTORIAL_SALARIOS (EMPLOYEE_ID, salario_anterior, salario_nuevo, fecha_cambio)
+    VALUES (:OLD.employee_id, :OLD.salary, :NEW.salary, SYSDATE);
+    DBMS_OUTPUT.PUT_LINE('Guardado en la tabla HISTORIAL_SALARIOS');
+
+    -- 2. Verificar si la diferencia es mayor al 20%
+    IF (:NEW.salary - :OLD.salary) > (0.20 * :OLD.salary) THEN
+        -- Calcular el porcentaje de incremento
+        v_porcentaje_incremento := ((:NEW.salary - :OLD.salary) / :OLD.salary) * 100;
+
+        -- Insertar en AUDITORIA_SALARIOS_ALTOS
+        INSERT INTO AUDITORIA_SALARIOS_ALTOS (employee_id, fecha_modificacion, salario_anterior, salario_nuevo, porcentaje_incremento)
+        VALUES (:OLD.employee_id, SYSDATE, :OLD.salary, :NEW.salary, v_porcentaje_incremento);
+        DBMS_OUTPUT.PUT_LINE('GUARDADO EN LA TABLA AUDITORIA_SALARIOS_ALTOS');
+    END IF;
+END;
+/
 
 
 
