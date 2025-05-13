@@ -47,6 +47,25 @@ BEGIN
 END;
 /
 
+-----------------------------------------------------------------------------------------------------------------------------------
+
+4 - Crear un trigger AFTER INSERT sobre la tabla EMPLOYEES que:
+Registre automáticamente en una tabla de auditoría (AUDITORIA_SALARIOS_ALTOS) todos los empleados cuyo SALARY sea mayor a 10,000.
+
+CREATE OR REPLACE TRIGGER TRG_SALARIO_ALTO
+AFTER INSERT ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+  IF :NEW.SALARY > 10000 THEN
+    INSERT INTO AUDITORIA_SALARIOS_ALTOS 
+    VALUES (:NEW.EMPLOYEE_ID, :NEW.FIRST_NAME, :NEW.LAST_NAME, :NEW.SALARY, SYSDATE);
+
+    DBMS_OUTPUT.PUT_LINE('Nuevo empleado registrado en auditoría.');
+  END IF;
+END;
+/
+
+
 
 
 
