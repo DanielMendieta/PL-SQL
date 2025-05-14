@@ -94,7 +94,39 @@ BEGIN
     END IF;
 END;
 /
+-----------------------------------------------------------------------------------------------------------------------------------
+6 - Ejercicio Avanzado:
 
+Crea un trigger que se ejecute BEFORE UPDATE en la tabla EMPLEADOS. Este trigger deberá verificar si se está intentando cambiar el department_id de un empleado.
+Si el department_id va a ser modificado, el trigger deberá realizar las siguientes acciones:
+
+-Insertar un nuevo registro en una tabla de auditoría llamada AUDITORIA_CAMBIOS_DEPARTAMENTO 
+
+-Impedir la actualización del department_id si el usuario que está realizando la modificación no es un usuario específico (por ejemplo, 'ADMIN_RRHH').
+
+-Si el usuario no autorizado intenta cambiar el departamento 
+el trigger deberá lanzar una excepción impidiendo la actualización y mostrando un mensaje informativo.
+
+
+CREATE OR REPLACE TRIGGER TRG_ANTES_ACT_DEPARTAMENTO
+BEFORE UPDATE OF DEPARTMENT_ID ON EMPLOYEES
+FOR EACH ROW
+DECLARE
+v_usuario varchar2(80):= USER;
+BEGIN
+
+IF v_usuario ='ADMIN_RRHH' THEN
+
+    INSERT INTO AUDITORIA_CAMBIOS_DEPARTAMENTO (employee_id, fecha_cambio, departamento_anterior, departamento_nuevo, usuario_modificador)
+    VALUES (:OLD.employee_id, SYSDATE, :OLD.DEPARTMENT_ID, :NEW.DEPARTMENT_ID, v_usuario);
+     DBMS_OUTPUT.PUT_LINE ('Cambios Guardados en AUDITORIA_CAMBIOS_DEPARTAMENTO');
+
+ELSE
+    RAISE_APPLICATION_ERROR (-20001, 'Usuario no autorizado para hacer cambios en esta columna ');
+    DBMS_OUTPUT.PUT_LINE ( 'Usuario no autorizado para hacer cambios en esta columna ');
+END IF;
+END;
+/
 
 
 
